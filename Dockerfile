@@ -1,23 +1,20 @@
-# Use Node.js LTS image
-FROM node:lts-buster
+# Use official Node.js image
+FROM node:20-buster
 
-# Set working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Clone the repo (optional – better to use COPY for your own code)
-# RUN git clone https://github.com/officialpkdriller/PK-XMD.git .
+# Copy package.json and package-lock.json to the container
+COPY package*.json ./
 
-# Copy local files to the container
-COPY . .
-
-# Install dependencies
+# Install the application dependencies
 RUN npm install
 
-# Optionally install pm2 if needed globally
-RUN npm install -g pm2
+# Copy the rest of the application files into the container
+COPY . .
 
-# Expose the app's port
-EXPOSE 9090
+# Expose the port your app will be running on
+EXPOSE 8000
 
-# Start the app
+# Command to run the app
 CMD ["npm", "start"]
