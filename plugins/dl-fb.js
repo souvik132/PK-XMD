@@ -34,7 +34,17 @@ cmd({
 
     await conn.sendMessage(from, {
       video: { url: downloadLink },
-      caption: `> Powered By pkdriller 💙`
+      caption: `> Powered By pkdriller 💙`,
+      contextInfo: {
+        mentionedJid: [m.sender],
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: '120363288304618280@newsletter',
+          newsletterName: 'PK-XMD',
+          serverMessageId: 143
+        }
+      }
     }, { quoted: mek });
 
     await conn.sendMessage(from, { react: { text: '✅', key: m.key } });
@@ -77,7 +87,17 @@ cmd({
 
     await conn.sendMessage(from, {
       video: { url: downloadLink },
-      caption: `> Powered By Pkdriller `
+      caption: `> Powered By Pkdriller`,
+      contextInfo: {
+        mentionedJid: [m.sender],
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: '120363288304618280@newsletter',
+          newsletterName: 'PK-XMD',
+          serverMessageId: 143
+        }
+      }
     }, { quoted: mek });
 
     await conn.sendMessage(from, { react: { text: '✅', key: m.key } });
@@ -121,7 +141,17 @@ cmd({
 
     await conn.sendMessage(from, {
       video: { url: downloadLink },
-      caption: `> Powered By Pkdriller`
+      caption: `> Powered By Pkdriller`,
+      contextInfo: {
+        mentionedJid: [m.sender],
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: '120363288304618280@newsletter',
+          newsletterName: 'PK-XMD',
+          serverMessageId: 143
+        }
+      }
     }, { quoted: mek });
 
     await conn.sendMessage(from, { react: { text: '✅', key: m.key } });
