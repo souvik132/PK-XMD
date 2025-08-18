@@ -2,110 +2,59 @@ const { cmd } = require('../command');
 const axios = require('axios');
 const moment = require('moment-timezone');
 
-// More reliable quote APIs with better error handling
-const QUOTE_APIS = [
-  {
-    name: "Quotable",
-    url: "https://api.quotable.io/random",
-    parser: (data) => ({ 
-      quote: data.content,
-      author: data.author,
-      tags: data.tags.join(', ') || "inspiration"
-    })
-  },
-  {
-    name: "They Said So",
-    url: "https://quotes.rest/qod?language=en",
-    headers: { "Accept": "application/json" },
-    parser: (data) => ({
-      quote: data.contents.quotes[0].quote,
-      author: data.contents.quotes[0].author,
-      tags: data.contents.quotes[0].tags.join(', ') || "wisdom"
-    })
-  },
-  {
-    name: "Stoic Quotes",
-    url: "https://stoic-quotes.com/api/random",
-    parser: (data) => ({
-      quote: data.text,
-      author: data.author,
-      tags: "stoicism"
-    })
-  }
-];
-
 cmd({
   pattern: "quote",
   alias: ["inspire", "wisdom"],
-  desc: "Get inspirational quotes from multiple APIs",
+  desc: "Get inspirational quotes from ZenQuotes API",
   category: "fun",
   react: "💬",
   filename: __filename
 }, async (Void, mek, m) => {
   try {
+    const startTime = performance.now();
     const time = moment.tz('Africa/Nairobi').format('HH:mm:ss');
     const date = moment.tz('Africa/Nairobi').format('DD/MM/YYYY');
     
-    let lastError = null;
+    // Fetch from ZenQuotes API :cite[5]
+    const { data } = await axios.get('https://zenquotes.io/api/random', {
+      timeout: 5000
+    });
     
-    for (const api of QUOTE_APIS) {
-      try {
-        const config = {
-          timeout: 4000,
-          headers: api.headers || {}
-        };
-        
-        const { data } = await axios.get(api.url, config);
-        const { quote, author, tags } = api.parser(data);
-
-        // Enhanced formatting
-        const message = `
-🪄 *${api.name.toUpperCase()} QUOTE* 🪄
+    if (!data || !data[0]?.q) throw new Error("Invalid API response");
+    
+    const { q: quote, a: author } = data[0];
+    const endTime = performance.now();
+    const speed = (endTime - startTime).toFixed(2);
+    
+    // Beautiful formatting
+    const message = `
+✨ *INSPIRATIONAL QUOTE* ✨
 
 ${quote}
 
-— *${author}*  
-🔖 Tags: ${tags}
+— *${author || "Unknown"}*
 
+⏱️ Fetched in ${speed}ms
 📅 ${date} | 🕒 ${time}
-Powered by PK-XMD
+
+_Powered by ZenQuotes.io_
 `.trim();
 
-        await Void.sendMessage(
-          m.chat,
-          {
-            text: message,
-            contextInfo: {
-              externalAdReply: {
-                title: `💬 ${api.name} Wisdom`,
-                body: quote.length > 30 ? quote.substring(0, 30) + "..." : quote,
-                thumbnailUrl: 'https://i.imgur.com/9E7JV7l.jpg',
-                sourceUrl: 'https://github.com/mejjar00254/PK-XMD',
-                mediaType: 1
-              }
-            }
-          },
-          { quoted: mek }
-        );
-        return;
-        
-      } catch (error) {
-        console.error(`[${api.name} Failed]:`, error.message);
-        lastError = error;
-        continue; // Try next API
-      }
-    }
-    
-    // If all APIs failed
     await Void.sendMessage(
       m.chat,
-      { 
-        text: "⚠️ All quote services are currently unavailable.\nPlease try again later.",
+      {
+        text: message,
         contextInfo: {
           externalAdReply: {
-            title: "PK-XMD Quote Service",
-            body: "Temporary outage - we're working on it!",
-            thumbnailUrl: 'https://i.imgur.com/9E7JV7l.jpg'
+            title: "PK-XMD • Daily Wisdom",
+            body: quote.length > 30 ? quote.substring(0, 30) + "..." : quote,
+            thumbnailUrl: 'https://i.imgur.com/9E7JV7l.jpg',
+            sourceUrl: 'https://zenquotes.io/',
+            mediaType: 1
+          },
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: "120363288304618280@newsletter",
+            newsletterName: "PK-XMD Official"
           }
         }
       },
@@ -113,15 +62,15 @@ Powered by PK-XMD
     );
     
   } catch (error) {
-    console.error('[Quote Command Error]:', error);
+    console.error('Quote command error:', error);
     await Void.sendMessage(
       m.chat,
       { 
-        text: "❌ Unexpected error in quote command!\nOur team has been notified.",
+        text: "⚠️ Failed to fetch quote. Please try again later.",
         contextInfo: {
           externalAdReply: {
-            title: "PK-XMD Error Report",
-            body: "Technical issue detected",
+            title: "PK-XMD • Service Error",
+            body: "Quote service temporarily unavailable",
             thumbnailUrl: 'https://i.imgur.com/9E7JV7l.jpg'
           }
         }
