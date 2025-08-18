@@ -1,69 +1,71 @@
-const { cmd, commands } = require('../command');
-const { fetchJson } = require('../lib/functions');
+const { cmd } = require('../command');
 const axios = require('axios');
 
 cmd({
   pattern: "bible",
   alias: ["verse"],
   react: "✝️",
-  desc: "Get Bible verses and passages.",
+  desc: "Get Bible verses and passages",
   category: "main",
   filename: __filename
 }, async (conn, mek, m, { from, quoted, args, reply }) => {
   try {
-    let [book, chapter, verse] = args.join(' ').split(/[\s:]/);
-    if (!book) return reply('Please specify a book, chapter and verse (e.g. .bible John 3:16)');
+    if (!args[0]) return reply('Please specify a passage (e.g. .bible John 3:16 or .bible Genesis 1:1-5)');
 
-    // Fetch book list to validate input
-    let booksRes = await axios.get('https://bible-api.com/books');
-    let books = booksRes.data;
+    // Clean and format the input
+    const passage = args.join(' ')
+      .replace(/[^a-zA-Z0-9\s:-]/g, '') // Remove special chars
+      .trim();
     
-    // Find matching book (case insensitive)
-    let matchedBook = books.find(b => 
-      b.name.toLowerCase().includes(book.toLowerCase()) || 
-      b.abbreviation.toLowerCase() === book.toLowerCase()
-    );
+    // Supported translations
+    const translations = {
+      'kjv': 'King James Version',
+      'niv': 'New International Version',
+      'esv': 'English Standard Version',
+      'nasb': 'New American Standard Bible'
+    };
     
-    if (!matchedBook) return reply(`Couldn't find book "${book}"`);
-
-    let passage = `${matchedBook.name} ${chapter}${verse ? `:${verse}` : ''}`;
-    let apiUrl = `https://bible-api.com/${encodeURIComponent(passage)}?translation=kjv`;
-    
-    let res = await axios.get(apiUrl);
-    if (res.status !== 200) return reply(`API error ${res.status}: ${res.statusText}`);
-
-    let json = res.data;
-
-    let bibleText = `
-✝️ *Holy Bible* ✝️
-
-📖 *${json.reference} (KJV)*
-${json.verses.map(v => `🔮 ${v.verse}. ${v.text}`).join('\n')}
-
-📜 *${json.translation_name} (${json.translation})*
-${json.text}`;
-
-    await conn.sendMessage(
-      from,
-      {
-        image: { url: `https://files.catbox.moe/example.jpg` }, // Replace with Bible image
-        caption: bibleText,
-        contextInfo: {
-          mentionedJid: [m.sender],
-          forwardingScore: 999,
-          isForwarded: true,
-          forwardedNewsletterMessageInfo: {
-            newsletterJid: '120363288304618280@newsletter',
-            newsletterName: 'PK-XMD',
-            serverMessageId: 143
-          }
+    // Try multiple translations if first fails
+    for (const [translation, name] of Object.entries(translations)) {
+      try {
+        const apiUrl = `https://bible-api.com/${encodeURIComponent(passage)}?translation=${translation}`;
+        const res = await axios.get(apiUrl, { timeout: 5000 });
+        
+        if (res.data.verses && res.data.verses.length > 0) {
+          const json = res.data;
+          
+          let bibleText = `✝️ *Holy Bible (${name})* ✝️\n\n`;
+          bibleText += `📖 *${json.reference}*\n\n`;
+          
+          json.verses.forEach(verse => {
+            bibleText += `🔮 ${verse.verse}. ${verse.text}\n\n`;
+          });
+          
+          await conn.sendMessage(
+            from,
+            {
+              image: { url: 'https://i.imgur.com/9E7JV7l.jpg' }, // Bible image
+              caption: bibleText,
+              contextInfo: {
+                mentionedJid: [m.sender],
+                forwardingScore: 999,
+                isForwarded: true
+              }
+            },
+            { quoted: mek }
+          );
+          return; // Success - exit the function
         }
-      },
-      { quoted: mek }
-    );
+      } catch (err) {
+        console.log(`Attempt with ${translation} failed, trying next...`);
+      }
+    }
+    
+    // If all attempts failed
+    reply(`Could not find the passage "${passage}". Try formats like:\n- John 3:16\n- Genesis 1\n- Psalms 23:1-4`);
 
   } catch (error) {
-    console.error(error);
-    reply(`Error: ${error.message}`);
+    console.error('Bible command error:', error);
+    reply('Error fetching Bible passage. Please try again later.');
   }
 });
