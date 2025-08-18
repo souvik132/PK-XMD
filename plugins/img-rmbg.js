@@ -22,14 +22,14 @@ cmd({
   category: "img_edit",
   use: ".rmbg [reply to image]",
   filename: __filename
-}, async (conn, message, m,  { reply, mek }) => {
+}, async (conn, message, m, { reply }) => {
   try {
     // Check if quoted message exists and has media
     const quotedMsg = message.quoted ? message.quoted : message;
     const mimeType = (quotedMsg.msg || quotedMsg).mimetype || '';
     
     if (!mimeType || !mimeType.startsWith('image/')) {
-      return reply("Please reply to an image file (JPEG/PNG)");
+      return reply("❌ Please reply to an image file (JPEG/PNG)");
     }
 
     // Download the media
@@ -41,7 +41,7 @@ cmd({
     if (mimeType.includes('image/jpeg')) extension = '.jpg';
     else if (mimeType.includes('image/png')) extension = '.png';
     else {
-      return reply("Unsupported image format. Please use JPEG or PNG");
+      return reply("❌ Unsupported image format. Please use JPEG or PNG");
     }
 
     const tempFilePath = path.join(os.tmpdir(), `imgscan_${Date.now()}${extension}`);
@@ -68,18 +68,52 @@ cmd({
     const response = await axios.get(apiUrl, { responseType: "arraybuffer" });
 
     if (!response || !response.data) {
-      return reply("Error: The API did not return a valid image. Try again later.");
+      return reply("⚠️ Error: The API did not return a valid image. Try again later.");
     }
 
     const imageBuffer = Buffer.from(response.data, "binary");
 
+    // Fake verified contact (quoted)
+    let fakeContact = {
+      key: {
+        fromMe: false,
+        participant: '0@s.whatsapp.net',
+        remoteJid: 'status@broadcast'
+      },
+      message: {
+        contactMessage: {
+          displayName: 'PKDRILLER ✅',
+          vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:PKDRILLER ✅\nORG:PK-XMD;\nTEL;type=CELL;type=VOICE;waid=254700000000:+254 700 000000\nEND:VCARD`,
+          jpegThumbnail: null
+        }
+      }
+    }
+
     await conn.sendMessage(m.chat, {
       image: imageBuffer,
-      caption: `Background removed\n\n> *Powered by JawadTechX*`
-    });
+      caption: `✅ Background removed successfully!\n\n> *Powered by Pkdriller*`,
+      contextInfo: {
+        externalAdReply: {
+          title: "IMAGE BACKGROUND REMOVER",
+          body: "Powered by PK-XMD",
+          thumbnailUrl: "https://files.catbox.moe/fgiecg.jpg",
+          sourceUrl: "https://github.com/pkdriller",
+          mediaType: 1,
+          renderLargerThumbnail: false,
+          showAdAttribution: true
+        },
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: "120363288304618280@newsletter",
+          newsletterName: "PK-XMD Bot Updates",
+          serverMessageId: "",
+        }
+      }
+    }, { quoted: fakeContact });
 
   } catch (error) {
     console.error("Rmbg Error:", error);
-    reply(`An error occurred: ${error.response?.data?.message || error.message || "Unknown error"}`);
+    reply(`❌ An error occurred: ${error.response?.data?.message || error.message || "Unknown error"}`);
   }
 });
