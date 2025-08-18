@@ -4,9 +4,9 @@ const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, 
 
 cmd({
     pattern: "tagadmin",
-    react: "👑",
-    alias: ["admintag"],
-    desc: "To Tag all Admins",
+    react: "🛡️",
+    alias: ["gc_tagadmin"],
+    desc: "To Tag all Group Admins",
     category: "group",
     use: '.tagadmin [message]',
     filename: __filename
@@ -15,29 +15,29 @@ async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAd
     try {
         if (!isGroup) return reply("❌ This command can only be used in groups.");
 
-        const botOwner = conn.user.id.split(":")[0];
+        const botOwner = conn.user.id.split(":")[0]; // Extract bot owner's number
         const senderJid = senderNumber + "@s.whatsapp.net";
 
-        if (!groupAdmins.includes(senderJid) {
-            return reply("❌ Only group admins can use this command.");
+        if (!groupAdmins.includes(senderJid) && senderNumber !== botOwner) {
+            return reply("❌ Only group admins or the bot owner can use this command.");
         }
 
         let groupInfo = await conn.groupMetadata(from).catch(() => null);
         if (!groupInfo) return reply("❌ Failed to fetch group information.");
 
         let groupName = groupInfo.subject || "Unknown Group";
-        let admins = await getGroupAdmins(participants);
-        if (admins.length === 0) return reply("❌ No admins found in this group.");
+        let totalAdmins = groupAdmins ? groupAdmins.length : 0;
+        if (totalAdmins === 0) return reply("❌ No admins found in this group.");
 
-        let emojis = ['👑', '⚡', '🔰', '💎', '🌟', '✨', '🎖️', '🛡️'];
+        let emojis = ['🛡️', '⚡', '🔥', '🚀', '🎉', '💎', '🏆', '🌟', '🔰', '📌', '🎖️', '👑'];
         let randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
 
         let message = body.slice(body.indexOf(command) + command.length).trim();
-        if (!message) message = "Attention Admins";
+        if (!message) message = "Attention Admins"; // Default message
 
-        let teks = `▢ Group : *${groupName}*\n▢ Admins : *${admins.length}*\n▢ Message: *${message}*\n\n┌───⊷ *ADMIN MENTIONS*\n`;
+        let teks = `▢ Group : *${groupName}*\n▢ Admins : *${totalAdmins}*\n▢ Message: *${message}*\n\n┌───⊷ *ADMIN MENTIONS*\n`;
 
-        for (let admin of admins) {
+        for (let admin of groupAdmins) {
             teks += `${randomEmoji} @${admin.split('@')[0]}\n`;
         }
 
@@ -60,7 +60,7 @@ async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAd
 
         await conn.sendMessage(from, {
             text: teks,
-            mentions: admins,
+            mentions: groupAdmins,
             contextInfo: {
                 externalAdReply: {
                     title: "ADMIN PINGER",
