@@ -18,7 +18,7 @@ cmd({
   try {
     await reply("🔎 Checking for PK-XMD updates...");
 
-    const repo = "mejjar00254/PK-XMD";
+    const repo = "officialPkdriller/PK-XMD";
 
     const latestCommit = await axios.get(`https://api.github.com/repos/${repo}/commits/main`);
     const latestHash = latestCommit.data.sha;
