@@ -4,40 +4,39 @@ const moment = require('moment-timezone');
 
 cmd({
   pattern: "quote",
-  alias: ["inspire", "wisdom"],
-  desc: "Get inspirational quotes from ZenQuotes API",
+  alias: ["inspire"],
+  desc: "Get inspirational quotes from Quotable API",
   category: "fun",
   react: "💬",
   filename: __filename
 }, async (Void, mek, m) => {
   try {
-    const startTime = performance.now();
+    const start = Date.now();
     const time = moment.tz('Africa/Nairobi').format('HH:mm:ss');
     const date = moment.tz('Africa/Nairobi').format('DD/MM/YYYY');
-    
-    // Fetch from ZenQuotes API :cite[5]
-    const { data } = await axios.get('https://zenquotes.io/api/random', {
-      timeout: 5000
+
+    // Using Quotable API (more reliable free API)
+    const { data } = await axios.get('https://api.quotable.io/random', {
+      timeout: 4000 // 4 second timeout
     });
-    
-    if (!data || !data[0]?.q) throw new Error("Invalid API response");
-    
-    const { q: quote, a: author } = data[0];
-    const endTime = performance.now();
-    const speed = (endTime - startTime).toFixed(2);
-    
-    // Beautiful formatting
+
+    if (!data || !data.content) throw new Error("Invalid API response");
+
+    const fetchTime = Date.now() - start;
+
+    // Beautiful message formatting
     const message = `
-✨ *INSPIRATIONAL QUOTE* ✨
+🪄 *DAILY INSPIRATION* 🪄
 
-${quote}
+"${data.content}"
 
-— *${author || "Unknown"}*
+— *${data.author}*
 
-⏱️ Fetched in ${speed}ms
+📚 Tags: ${data.tags?.join(', ') || 'wisdom'}
+⏱️ Fetched in ${fetchTime}ms
 📅 ${date} | 🕒 ${time}
 
-_Powered by ZenQuotes.io_
+_Powered by Quotable API_
 `.trim();
 
     await Void.sendMessage(
@@ -46,30 +45,33 @@ _Powered by ZenQuotes.io_
         text: message,
         contextInfo: {
           externalAdReply: {
-            title: "PK-XMD • Daily Wisdom",
-            body: quote.length > 30 ? quote.substring(0, 30) + "..." : quote,
+            title: "PK-XMD • Words of Wisdom",
+            body: data.content.length > 30 
+              ? `${data.content.substring(0, 30)}...` 
+              : data.content,
             thumbnailUrl: 'https://i.imgur.com/9E7JV7l.jpg',
-            sourceUrl: 'https://zenquotes.io/',
+            sourceUrl: 'https://api.quotable.io',
             mediaType: 1
           },
           forwardedNewsletterMessageInfo: {
             newsletterJid: "120363288304618280@newsletter",
-            newsletterName: "PK-XMD Official"
+            newsletterName: "PK-XMD Official",
+            serverMessageId: 456
           }
         }
       },
       { quoted: mek }
     );
-    
+
   } catch (error) {
-    console.error('Quote command error:', error);
+    console.error('Quote Error:', error.message);
     await Void.sendMessage(
       m.chat,
-      { 
-        text: "⚠️ Failed to fetch quote. Please try again later.",
+      {
+        text: `⚠️ Couldn't fetch quote right now. Please try again later.\n\nError: ${error.message}`,
         contextInfo: {
           externalAdReply: {
-            title: "PK-XMD • Service Error",
+            title: "PK-XMD • Service Notice",
             body: "Quote service temporarily unavailable",
             thumbnailUrl: 'https://i.imgur.com/9E7JV7l.jpg'
           }
