@@ -1,10 +1,13 @@
 const config = require('../config')
 const { cmd } = require('../command')
 
+// Temporary in-memory store for active users
+let activeUsers = {}  // { jid: timestamp }
+
 cmd({
     pattern: "online",
     react: "🟢",
-    desc: "Check all members who are online in the group.",
+    desc: "Check who is online or recently active in the group.",
     category: "group",
     use: '.online',
     filename: __filename
@@ -13,7 +16,7 @@ async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAd
     try {
         if (!isGroup) return reply("❌ This command can only be used in groups.");
 
-        const botOwner = conn.user.id.split(":")[0]; // Extract bot owner's number
+        const botOwner = conn.user.id.split(":")[0];
         const senderJid = senderNumber + "@s.whatsapp.net";
 
         if (!groupAdmins.includes(senderJid) && senderNumber !== botOwner) {
@@ -22,27 +25,20 @@ async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAd
 
         let groupInfo = await conn.groupMetadata(from).catch(() => null);
         if (!groupInfo) return reply("❌ Failed to fetch group information.");
-
         let groupName = groupInfo.subject || "Unknown Group";
 
-        // Fetch presence updates for all participants
-        let onlineUsers = [];
-        for (let user of participants) {
-            let presence = conn.presence?.[from]?.[user.id];
-            if (presence && presence.lastKnownPresence === 'composing' || presence === 'available' || presence === 'online') {
-                onlineUsers.push(user.id);
-            }
+        // Time window (last 10 minutes = 600000 ms)
+        let now = Date.now();
+        let activeNow = Object.keys(activeUsers).filter(jid => now - activeUsers[jid] <= 600000);
+
+        if (activeNow.length === 0) {
+            return reply("⚠️ No members are currently online or active in the last 10 minutes.");
         }
 
-        if (onlineUsers.length === 0) {
-            return reply("⚠️ No members are currently online.");
-        }
-
-        let teks = `🟢 *Online Members in ${groupName}* 🟢\n\n`;
-        for (let jid of onlineUsers) {
+        let teks = `🟢 *Active Members in ${groupName} (last 10 mins)* 🟢\n\n`;
+        for (let jid of activeNow) {
             teks += `✅ @${jid.split('@')[0]}\n`;
         }
-
         teks += `\n└──★💙 PK ┃ XMD 💙★──`;
 
         let fakeContact = {
@@ -62,10 +58,10 @@ async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAd
 
         await conn.sendMessage(from, {
             text: teks,
-            mentions: onlineUsers,
+            mentions: activeNow,
             contextInfo: {
                 externalAdReply: {
-                    title: "ONLINE CHECKER",
+                    title: "ONLINE / ACTIVE CHECKER",
                     body: "Powered by Pkdriller",
                     thumbnailUrl: "https://files.catbox.moe/fgiecg.jpg",
                     sourceUrl: "https://github.com/pkdriller",
@@ -84,7 +80,28 @@ async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAd
         }, { quoted: fakeContact });
 
     } catch (e) {
-        console.error("Online Command Error:", e);
+        console.error("Online/Active Command Error:", e);
         reply(`❌ *Error Occurred !!*\n\n${e.message || e}`);
     }
 });
+
+// 📌 Hook into messages and presence updates
+module.exports = (conn) => {
+    conn.ev.on("messages.upsert", async (m) => {
+        try {
+            let msg = m.messages[0];
+            if (!msg.key.remoteJid.endsWith("@g.us")) return;
+            let sender = msg.key.participant || msg.key.remoteJid;
+            activeUsers[sender] = Date.now();
+        } catch {}
+    });
+
+    conn.ev.on("presence.update", (json) => {
+        try {
+            let { id, presences } = json;
+            for (let jid in presences) {
+                activeUsers[jid] = Date.now();
+            }
+        } catch {}
+    });
+};
