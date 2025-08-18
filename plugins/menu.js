@@ -264,7 +264,7 @@ cmd({
         // System Info
         const dateNow = moment().tz('Africa/Nairobi').format('dddd, MMMM Do YYYY, HH:mm:ss');
         const upTime = runtime(process.uptime());
-        const botName = "NEXUS-AI";
+        const botName = "PK-XMD";
         const ownerName = "PK-TECH";
         const totalCommands = Object.values(commands).length;
         const prefix = "*";
@@ -333,14 +333,14 @@ ${'\u200B'.repeat(4001)}  💎
 
         // Send Menu
         await conn.sendMessage(m.chat, {
-            image: { url: "https://i.postimg.cc/k5pGMNyR/7f503f3c-bb3e-4a3d-8950-bc1a31642480.jpg" },
+            image: { url: "https://files.catbox.moe/zf84te.jpg" },
             caption: menuText,
             contextInfo: {
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: "120363288304618280@newsletter",
-                    newsletterName: "NEXUS-AI",
+                    newsletterName: "PK-XMD",
                     serverMessageId: -1
                 }
             }
