@@ -1,16 +1,17 @@
-const { cmd } = require('../command');
-const { getGroupAdmins } = require('../lib/functions');
+const config = require('../config')
+const { cmd, commands } = require('../command')
+const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('../lib/functions')
 
 cmd({
     pattern: "tagadmin",
     react: "👑",
     alias: ["admintag"],
-    desc: "Tag all group admins",
+    desc: "To Tag all Admins",
     category: "group",
     use: '.tagadmin [message]',
     filename: __filename
 },
-async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAdmins, prefix, command, args }) => {
+async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAdmins, prefix, command, args, body }) => {
     try {
         if (!isGroup) return reply("❌ This command can only be used in groups.");
 
@@ -21,51 +22,67 @@ async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAd
             return reply("❌ Only group admins can use this command.");
         }
 
-        let groupInfo = await conn.groupMetadata(from);
+        let groupInfo = await conn.groupMetadata(from).catch(() => null);
+        if (!groupInfo) return reply("❌ Failed to fetch group information.");
+
         let groupName = groupInfo.subject || "Unknown Group";
-        
-        // Get all admins
-        const admins = await getGroupAdmins(participants);
+        let admins = await getGroupAdmins(participants);
         if (admins.length === 0) return reply("❌ No admins found in this group.");
 
-        let message = args.length > 0 ? args.join(' ') : "Attention Admins";
-        
-        let teks = `👑 *Admin Mention* 👑\n\n` +
-                  `▢ Group: *${groupName}*\n` +
-                  `▢ Admins: *${admins.length}*\n` +
-                  `▢ Message: *${message}*\n\n` +
-                  `┌───⊷ *ADMIN LIST*\n`;
-        
-        admins.forEach(admin => {
-            teks += `👑 @${admin.split('@')[0]}\n`;
-        });
-        
-        teks += `└──★💙 PK ┃ XMD 💙★──`;
+        let emojis = ['👑', '⚡', '🔰', '💎', '🌟', '✨', '🎖️', '🛡️'];
+        let randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+        let message = body.slice(body.indexOf(command) + command.length).trim();
+        if (!message) message = "Attention Admins";
+
+        let teks = `▢ Group : *${groupName}*\n▢ Admins : *${admins.length}*\n▢ Message: *${message}*\n\n┌───⊷ *ADMIN MENTIONS*\n`;
+
+        for (let admin of admins) {
+            teks += `${randomEmoji} @${admin.split('@')[0]}\n`;
+        }
+
+        teks += "└──★💙 PK ┃ XMD 💙★──";
+
+        let fakeContact = {
+            key: {
+                fromMe: false,
+                participant: '0@s.whatsapp.net',
+                remoteJid: 'status@broadcast'
+            },
+            message: {
+                contactMessage: {
+                    displayName: 'PKDRILLER ✅',
+                    vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:PKDRILLER ✅\nORG:PK-XMD;\nTEL;type=CELL;type=VOICE;waid=254700000000:+254 700 000000\nEND:VCARD`,
+                    jpegThumbnail: null
+                }
+            }
+        }
 
         await conn.sendMessage(from, {
             text: teks,
             mentions: admins,
             contextInfo: {
                 externalAdReply: {
-                    title: "PK-XMD ADMIN TAG",
-                    body: "Admin mention powered by PK-XMD",
+                    title: "ADMIN PINGER",
+                    body: "Powered by Pkdriller",
                     thumbnailUrl: "https://files.catbox.moe/fgiecg.jpg",
-                    sourceUrl: "https://github.com/mejjar00254/PK-XMD",
+                    sourceUrl: "https://github.com/pkdriller",
                     mediaType: 1,
-                    renderLargerThumbnail: true
+                    renderLargerThumbnail: false,
+                    showAdAttribution: true
                 },
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: "120363288304618280@newsletter",
-                    newsletterName: "PK-XMD Official",
-                    serverMessageId: 789
+                    newsletterName: "PK-XMD Bot Updates",
+                    serverMessageId: "",
                 }
             }
-        }, { quoted: mek });
+        }, { quoted: fakeContact });
 
     } catch (e) {
         console.error("TagAdmin Error:", e);
-        reply(`❌ Error: ${e.message}`);
+        reply(`❌ *Error Occurred !!*\n\n${e.message || e}`);
     }
 });
