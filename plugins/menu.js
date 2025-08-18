@@ -147,4 +147,207 @@
 
 
 
-const _0x1a2ad3=_0x42a3;function _0x42a3(_0x1d4c32,_0x31e194){const _0x499d2c=_0x499d();return _0x42a3=function(_0x42a323,_0xd95fef){_0x42a323=_0x42a323-0xc9;let _0x5bdf26=_0x499d2c[_0x42a323];return _0x5bdf26;},_0x42a3(_0x1d4c32,_0x31e194);}(function(_0x7ede01,_0xba672f){const _0x464eed=_0x42a3,_0x9d6373=_0x7ede01();while(!![]){try{const _0x561a3e=-parseInt(_0x464eed(0xe8))/0x1*(-parseInt(_0x464eed(0xea))/0x2)+parseInt(_0x464eed(0xe6))/0x3*(parseInt(_0x464eed(0xcd))/0x4)+-parseInt(_0x464eed(0xe3))/0x5+parseInt(_0x464eed(0xcc))/0x6+parseInt(_0x464eed(0xf5))/0x7+parseInt(_0x464eed(0xe7))/0x8*(parseInt(_0x464eed(0xf4))/0x9)+-parseInt(_0x464eed(0xce))/0xa;if(_0x561a3e===_0xba672f)break;else _0x9d6373['push'](_0x9d6373['shift']());}catch(_0x2148c9){_0x9d6373['push'](_0x9d6373['shift']());}}}(_0x499d,0x20c9f));function _0x499d(){const _0x5423ae=['push','sendMessage','DESCRIPTION','path','menu','endsWith','.js','120363288304618280@newsletter','BEGIN:VCARD\x0aVERSION:3.0\x0aFN:WhatsApp\x20Verified✓\x0aORG:Meta\x20Verified;\x0aTEL;type=CELL;type=VOICE;waid=254700000000:+254\x20700\x20000000\x0aEND:VCARD','MODE','fromCharCode','length','fullmenu','*├▢\x20📜\x20Commands:*\x20','uptime','map','../plugins','★\x20*','1012430IxvgXS','../config','matchAll','259503DXOeDL','1192YBSinJ','86479GYgEuC','readFileSync','4ehVSBh','*╰─────────────────⭓*\x0a\x0a','*├▢\x20☁️\x20Platform:*\x20Heroku\x0a','axios','filter','*├▢\x20📡\x20Baileys:*\x20Multi\x20Device\x0a','readdirSync','join','*├▢\x20⚙️\x20Mode:*\x20','../command','2853jSJyBq','806022NnYhZo','status@broadcast','WhatsApp\x20Verified','repeat','Show\x20all\x20bot\x20commands\x20dynamically','sender','utf-8','BOT_NAME','*├▢\x20⏱️\x20Runtime:*\x20','1239210pSxVNF','4oaWGMA','2915840cDyvxU','.menu2','MENU_IMAGE_URL'];_0x499d=function(){return _0x5423ae;};return _0x499d();}const config=require(_0x1a2ad3(0xe4)),{cmd,commands}=require(_0x1a2ad3(0xf3)),path=require(_0x1a2ad3(0xd4)),fs=require('fs'),{runtime}=require('../lib/functions'),axios=require(_0x1a2ad3(0xed));cmd({'pattern':'menu','alias':['allmenu',_0x1a2ad3(0xdd)],'use':_0x1a2ad3(0xcf),'desc':_0x1a2ad3(0xf9),'category':_0x1a2ad3(0xd5),'react':'📜','filename':__filename},async(_0x254f03,_0x28d986,_0x3112f4,{from:_0x4a910c,reply:_0x8a38c0})=>{const _0x15c6e1=_0x1a2ad3;try{const _0x36d095=path[_0x15c6e1(0xf1)](__dirname,_0x15c6e1(0xe1)),_0x5ca577=fs[_0x15c6e1(0xf0)](_0x36d095)[_0x15c6e1(0xee)](_0x126938=>_0x126938[_0x15c6e1(0xd6)](_0x15c6e1(0xd7)));let _0x58b34a=0x0,_0x1e5a37=[];for(const _0x15b14d of _0x5ca577){const _0x1780b8=path[_0x15c6e1(0xf1)](_0x36d095,_0x15b14d),_0x7e6b61=fs[_0x15c6e1(0xe9)](_0x1780b8,_0x15c6e1(0xc9)),_0x4d6023=[..._0x7e6b61[_0x15c6e1(0xe5)](/pattern:\s*["'`](.*?)["'`]/g)][_0x15c6e1(0xe0)](_0x1507a4=>_0x1507a4[0x1]);_0x4d6023[_0x15c6e1(0xdc)]&&(_0x58b34a+=_0x4d6023[_0x15c6e1(0xdc)],_0x1e5a37[_0x15c6e1(0xd1)]('📁\x20*'+_0x15b14d+'*\x0a'+_0x4d6023[_0x15c6e1(0xe0)](_0x3e9801=>_0x15c6e1(0xe2)+_0x3e9801+'*')[_0x15c6e1(0xf1)]('\x0a')));}let _0x44f23f='*╭────⬡\x20'+config['BOT_NAME']+'\x20⬡────⭓*\x0a'+('*├▢\x20🤖\x20Owner:*\x20'+config['OWNER_NAME']+'\x0a')+(_0x15c6e1(0xde)+_0x58b34a+'\x0a')+(_0x15c6e1(0xcb)+runtime(process[_0x15c6e1(0xdf)]())+'\x0a')+_0x15c6e1(0xef)+_0x15c6e1(0xec)+(_0x15c6e1(0xf2)+config[_0x15c6e1(0xda)]+'\x0a')+'*├▢\x20🏷️\x20Version:*\x205.0.0\x20Bᴇᴛᴀ\x0a'+_0x15c6e1(0xeb);const _0x3af9b4=String[_0x15c6e1(0xdb)](0x200e)[_0x15c6e1(0xf8)](0xfa1),_0x841451=_0x44f23f+_0x3af9b4+_0x1e5a37[_0x15c6e1(0xf1)]('\x0a\x0a')+('\x0a\x0a'+config[_0x15c6e1(0xd3)]),_0x5e5de8={'key':{'fromMe':![],'participant':'0@s.whatsapp.net','remoteJid':_0x15c6e1(0xf6)},'message':{'contactMessage':{'displayName':_0x15c6e1(0xf7),'vcard':_0x15c6e1(0xd9)}}};await _0x254f03[_0x15c6e1(0xd2)](_0x4a910c,{'image':{'url':config[_0x15c6e1(0xd0)]||'https://files.catbox.moe/fgiecg.jpg'},'caption':_0x841451,'contextInfo':{'mentionedJid':[_0x3112f4[_0x15c6e1(0xfa)]],'forwardingScore':0x3e7,'isForwarded':!![],'forwardedNewsletterMessageInfo':{'newsletterJid':_0x15c6e1(0xd8),'newsletterName':config[_0x15c6e1(0xca)],'serverMessageId':0x8f}}},{'quoted':_0x5e5de8});}catch(_0x5188b4){console['log'](_0x5188b4),_0x8a38c0('Error:\x20'+_0x5188b4);}});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const { cmd, commands } = require('../command');
+const moment = require('moment-timezone');
+const { runtime } = require('../lib/functions');
+const os = require('os');
+
+cmd({
+    pattern: "menu",
+    desc: "Display NEXUS-AI Command Menu",
+    category: "main",
+    filename: __filename
+}, async (conn, m, { reply }) => {
+    try {
+        // System Info
+        const dateNow = moment().tz('Africa/Nairobi').format('dddd, MMMM Do YYYY, HH:mm:ss');
+        const upTime = runtime(process.uptime());
+        const botName = "NEXUS-AI";
+        const ownerName = "PK-TECH";
+        const totalCommands = Object.values(commands).length;
+        const prefix = "*";
+        const ramUsage = `${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`;
+
+        // Quote System
+        const quotes = [
+            "✨ Keep smiling, life is beautiful!",
+            "🚀 Code, create, conquer!",
+            "💡 Innovation distinguishes the leader from the follower.",
+            "🎯 Focus on progress, not perfection.",
+            "🌟 Stay positive and keep moving forward."
+        ];
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+        // Command Grouping
+        let categorized = {};
+        for (let c of Object.values(commands)) {
+            if (!categorized[c.category]) categorized[c.category] = [];
+            categorized[c.category].push(c.pattern);
+        }
+
+        // Build Menu Header with Flowers
+        let menuText = `
+╭─⋄⋅🌺⋅⋄──⋅🌷⋅──⋄⋅🌸⋅⋄─╮
+       ${botName.toUpperCase()}
+╰─⋄⋅🌼⋅⋄──⋅🌹⋅──⋄⋅💮⋅⋄─╯
+
+╭────────────────────╮
+⋅📆 .*DATE*  : ${dateNow}
+─────────────────────
+⋅⏰ .*UPTIME*: ${upTime}
+─────────────────────
+⋅👤 .*OWNER* : ${ownerName}
+─────────────────────
+⋅📜 .*CMDS*  : ${totalCommands}
+─────────────────────
+⋅🛡️ .*PREFIX*: ${prefix}
+─────────────────────
+⋅💎 .*RAM*   : ${ramUsage}
+╰────────────────────╯
+
+╭───────────────╮
+│  *COMMAND LIST* │
+╰───────────────╯
+${'\u200B'.repeat(4001)}  💎
+`;
+
+        // Original Command Formatting
+        for (let category in categorized) {
+            menuText += `\n★ *${category.toUpperCase()}*\n`;
+            categorized[category].forEach(cmd => {
+                menuText += `> ☆ *${cmd}*\n`;
+            });
+        }
+
+        // Footer
+        menuText += `
+╭────────────────╮
+│  💬 "${randomQuote}"
+│  
+│  ✨ Powered by Baileys
+│  🏆 PK-TECH Edition
+╰────────────────╯
+`;
+
+        // Send Menu
+        await conn.sendMessage(m.chat, {
+            image: { url: "https://i.postimg.cc/k5pGMNyR/7f503f3c-bb3e-4a3d-8950-bc1a31642480.jpg" },
+            caption: menuText,
+            contextInfo: {
+                forwardingScore: 999,
+                isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                    newsletterJid: "120363288304618280@newsletter",
+                    newsletterName: "NEXUS-AI",
+                    serverMessageId: -1
+                }
+            }
+        }, { quoted: m });
+
+    } catch (e) {
+        console.error("Menu Error:", e);
+        reply("❌ Failed to display menu");
+    }
+});
