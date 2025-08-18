@@ -4,7 +4,7 @@ const { performance } = require('perf_hooks');
 
 cmd({
   pattern: "test",
-  alias: ["check", "botcheck"],
+  alias: ["checko", "botcheck"],
   desc: "Comprehensive bot test with diagnostics",
   category: "system",
   react: "🧪",
