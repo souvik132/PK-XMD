@@ -333,7 +333,7 @@ ${'\u200B'.repeat(4001)}  💎
 
         // Send Menu
         await conn.sendMessage(m.chat, {
-            image: { url: "https://files.catbox.moe/zf84te.jpg" },
+            image: { url: "https://files.catbox.moe/h4voyb.jpeg" },
             caption: menuText,
             contextInfo: {
                 forwardingScore: 999,
