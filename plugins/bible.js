@@ -43,7 +43,7 @@ cmd({
                     `📖 *Reference:* ${ref}\n` +
                     `📚 *Text:* ${text}\n\n` +
                     `🗂️ *Translation:* ${translation_name}\n\n` +
-                    `© CASEYRHODES XMD BIBLE`,
+                    `© PK XMD BIBLE`,
                 contextInfo: {
                     externalAdReply: {
                         title: "HOLY BIBLE VERSES",
