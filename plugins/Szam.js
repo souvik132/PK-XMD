@@ -9,7 +9,6 @@ const acr = new acrcloud({
     access_secret: 'Lz75UbI8g6AzkLRQgTgHyBlaQq9YT5wonr3xhFkf'
 });
 
-// 🎵 Shazam Command
 cmd({
     pattern: "shazam",
     alias: ["hansfind", "whatmusic"],
@@ -22,7 +21,7 @@ cmd({
     try {
         const qmsg = quoted || m.quoted;
         if (!qmsg || (qmsg.mtype !== 'audioMessage' && qmsg.mtype !== 'videoMessage')) {
-            return reply('🎧 Please reply to an audio or video to identify the music.');
+            return reply('🎧 Reply to an audio or video to identify the music.');
         }
 
         const mime = qmsg.mimetype || '';
@@ -34,20 +33,18 @@ cmd({
         const filePath = `./${Date.now()}.mp3`;
         fs.writeFileSync(filePath, media);
 
-        await reply('🔍 Identifying the music, please wait...');
+        await reply('🔍 Identifying music, please wait...');
 
         const res = await acr.identify(fs.readFileSync(filePath));
-        const { code, msg } = res.status;
-
         fs.unlinkSync(filePath);
 
-        if (code !== 0) {
-            return reply(`❌ Failed: ${msg}`);
+        if (res.status.code !== 0) {
+            return reply(`❌ Failed: ${res.status.msg}`);
         }
 
         const { title, artists, album, genres, release_date } = res.metadata.music[0];
         const txt = `
-🎵 *Music Identification Result*
+🎵 *Music Found!*
 
 • 📌 *Title:* ${title}
 • 👨‍🎤 *Artist:* ${artists ? artists.map(v => v.name).join(', ') : 'NOT FOUND'}
