@@ -56,7 +56,7 @@ const bioQuotes = [
       second: '2-digit',
       hour12: true
     });
-    return `⏰ ${timeString} | NEXUS-AI 🤖 | Always Active Success is a consequence and must must not be a goal | Nairobi Time`;
+    return `⏰ ${timeString} | PK-XMD 🤖 | Always Active Success is a consequence and must must not be a goal | Nairobi Time`;
   },
   () => {
     const now = new Date();
@@ -67,7 +67,7 @@ const bioQuotes = [
       second: '2-digit',
       hour12: true
     });
-    return `🔄 ${timeString} | NEXUS-AI 🤖 | Processing Requests | KE Time`;
+    return `🔄 ${timeString} | PK-XMD 🤖 | Processing Requests | KE Time`;
   },
   () => {
     const now = new Date();
@@ -78,7 +78,7 @@ const bioQuotes = [
       second: '2-digit',
       hour12: true
     });
-    return `⚡ ${timeString} | NEXUS-AI 🤖 | Lightning Fast Trust the process | EAT`;
+    return `⚡ ${timeString} | PK-XMD 🤖 | Lightning Fast Trust the process only the wicked sleep| EAT`;
   },
   () => {
     const now = new Date();
@@ -89,7 +89,7 @@ const bioQuotes = [
       second: '2-digit',
       hour12: true
     });
-    return `🌐 ${timeString} | NEXUS-AI 🤖 | Connected Worldwide speed is my middle name| GMT+3`;
+    return `🌐 ${timeString} | PK-XMD 🤖 | Connected Worldwide speed is my middle name| GMT+3`;
   },
   () => {
     const now = new Date();
@@ -100,7 +100,7 @@ const bioQuotes = [
       second: '2-digit',
       hour12: true
     });
-    return `🤖 ${timeString} | NEXUS-AI | Serving 24/7 stay positive keep moving forward| Kenya Time`;
+    return `🤖 ${timeString} | PK-XMD | Serving 24/7 stay positive keep moving forward| Kenya Time`;
   },
   () => {
     const now = new Date();
@@ -111,7 +111,7 @@ const bioQuotes = [
       second: '2-digit',
       hour12: true
     });
-    return `💡 ${timeString} | NEXUS-AI | Smart Assistant embrace the life you have and stop wishing you could be someone| EAT`;
+    return `💡 ${timeString} | PK-XMD | Smart Assistant embrace the life you have and stop wishing you could be someone| EAT`;
   },
   () => {
     const now = new Date();
@@ -122,7 +122,7 @@ const bioQuotes = [
       second: '2-digit',
       hour12: true
     });
-    return `🔮 ${timeString} | NEXUS-AI | Future of AI a needle is not sharp at both ends| Nairobi`;
+    return `🔮 ${timeString} | PK-XMD | Future of AI a needle is not sharp at both ends| Nairobi`;
   },
   () => {
     const now = new Date();
@@ -133,7 +133,7 @@ const bioQuotes = [
       second: '2-digit',
       hour12: true
     });
-    return `🚀 ${timeString} | NEXUS-AI | Next Gen Tech the only time you run out of chances is when you stop taking them| KE`;
+    return `🚀 ${timeString} | PK-XMD | Next Gen Tech the only time you run out of chances is when you stop taking them| KE`;
   },
   () => {
     const now = new Date();
@@ -144,7 +144,7 @@ const bioQuotes = [
       second: '2-digit',
       hour12: true
     });
-    return `💻 ${timeString} | NEXUS-AI | Coding the Future | EAT`;
+    return `💻 ${timeString} | PK-XMD | Coding the Future | EAT`;
   },
   () => {
     const now = new Date();
@@ -155,7 +155,7 @@ const bioQuotes = [
       second: '2-digit',
       hour12: true
     });
-    return `📡 ${timeString} | NEXUS-AI | Always Online nature is pleased with simplicity.and nature is no dummy| Nairobi Time`;
+    return `📡 ${timeString} | PK-XMD | Always Online nature is pleased with simplicity.and nature is no dummy| Nairobi Time`;
   }
 ];
 
@@ -252,7 +252,7 @@ async function connectToWA() {
   });
   
   // Updated connection message with newsletter context
-let up = `╭─〔 *🌐 NEXUS-AI CONNECTION ESTABLISHED* 〕
+let up = `╭─〔 *🌐 PK-XMD CONNECTION ESTABLISHED* 〕
 ├─ *🕒 Connection Time:* ${connectTime}
 ├─ *⚡ Uptime:* ${runtime(process.uptime())}
 ├─ *📊 Memory Usage:* ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB
@@ -263,7 +263,7 @@ let up = `╭─〔 *🌐 NEXUS-AI CONNECTION ESTABLISHED* 〕
 │
 ├─ *🧩 Prefix:* [ ${prefix} ]
 ├─ *🤖 Mode:* ${config.MODE}
-╰─➤ *🔮 Powered by Nexus-AI | © ${new Date().getFullYear()}*`;
+╰─➤ *🔮 Powered by Pkdriller | © ${new Date().getFullYear()}*`;
 
 // Send connection message with more details
 conn.sendMessage(conn.user.id, { 
