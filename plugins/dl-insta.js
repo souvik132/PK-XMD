@@ -17,30 +17,70 @@ cmd({
     // Show processing indicator
     await conn.sendMessage(from, { react: { text: "⏳", key: m.key } });
 
-    // API endpoint
-    const apiUrl = `https://apis.davidcyriltech.my.id/instagram?url=${encodeURIComponent(q)}`;
+    // New reliable API endpoint
+    const apiUrl = `https://api.irvyn.xyz/igdl?url=${encodeURIComponent(q)}`;
     
     // Fetch data from API
-    const { data } = await axios.get(apiUrl);
+    const { data } = await axios.get(apiUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+      }
+    });
 
     // Validate response
-    if (!data?.success || data?.status !== 200 || !data?.downloadUrl) {
+    if (!data || !data.data || !data.data.length) {
       return reply("⚠️ Failed to fetch media. Please check the link or try again later.");
     }
 
-    // Determine media type
-    const isVideo = data.type === "mp4";
-    const mediaType = isVideo ? "video" : "image";
+    const mediaData = data.data[0];
+    const mediaUrl = mediaData.url;
+    const mediaType = mediaUrl.includes('.mp4') ? 'video' : 'image';
+    const caption = `📸 *Instagram Download*\n\n` +
+                   `> *Powerd By Pkdriller*\n` +
+                   `🔗 *Original URL:* ${q}`;
 
-    // Send the media
+    // Fake contact for context
+    const fakeContact = {
+      key: {
+        fromMe: false,
+        participant: '0@s.whatsapp.net',
+        remoteJid: 'status@broadcast'
+      },
+      message: {
+        contactMessage: {
+          displayName: 'INSTA DL ✅',
+          vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:PK-XMD BOT\nORG:PK-XMD;\nTEL;type=CELL;type=VOICE;waid=254700000000:+254 700 000000\nEND:VCARD`,
+          jpegThumbnail: null
+        }
+      }
+    };
+
+    // Send the media with enhanced context
     await conn.sendMessage(
       from,
       {
-        [mediaType]: { url: data.downloadUrl },
-        mimetype: isVideo ? "video/mp4" : "image/jpeg",
-        caption: `> *Powerd By Pkdriller*`
+        [mediaType]: { url: mediaUrl },
+        caption: caption,
+        contextInfo: {
+          externalAdReply: {
+            title: "INSTAGRAM DOWNLOADER",
+            body: "Powered by PK-XMD",
+            thumbnailUrl: "https://files.catbox.moe/fgiecg.jpg",
+            sourceUrl: "https://github.com/pkdriller",
+            mediaType: 1,
+            renderLargerThumbnail: true,
+            showAdAttribution: true
+          },
+          forwardingScore: 999,
+          isForwarded: true,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: "120363288304618280@newsletter",
+            newsletterName: "PK-XMD Bot Updates",
+            serverMessageId: Math.floor(Math.random() * 1000000).toString(),
+          }
+        }
       },
-      { quoted: m }
+      { quoted: fakeContact }
     );
 
   } catch (error) {
