@@ -12,17 +12,35 @@ const eplCache = {
 // Cache expiration time (10 minutes)
 const CACHE_EXPIRY = 10 * 60 * 1000;
 
+// Fake contact for context
+const fakeContact = {
+    key: {
+        fromMe: false,
+        participant: '0@s.whatsapp.net',
+        remoteJid: 'status@broadcast'
+    },
+    message: {
+        contactMessage: {
+            displayName: 'EPL BOT ✅',
+            vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:PK-XMD BOT\nORG:PK-XMD;\nTEL;type=CELL;type=VOICE;waid=254700000000:+254 700 000000\nEND:VCARD`,
+            jpegThumbnail: null
+        }
+    }
+};
+
 cmd({
     pattern: "epl",
     alias: ["premierleague", "football"],
-    desc: "Get English Premier League information",
+    desc: "Get comprehensive English Premier League information",
     category: "sports",
     react: "⚽",
-    use: '.epl [standings|scorers|matches]',
+    use: '.epl',
     filename: __filename
 }, async (conn, mek, m, { from, reply, args }) => {
     try {
-        const [command] = args;
+        // Show processing reaction
+        await conn.sendMessage(from, { react: { text: "⚽", key: mek.key } });
+
         const currentTime = Date.now();
 
         // Helper function to fetch data with cache
@@ -33,7 +51,7 @@ cmd({
 
             const response = await axios.get(url, {
                 headers: {
-                    'X-Auth-Token': '7bcc01e07abe477191649864d254b301' // Get free key from football-data.org
+                    'X-Auth-Token': '7bcc01e07abe477191649864d254b301'
                 }
             });
 
@@ -45,79 +63,76 @@ cmd({
             return response.data;
         }
 
-        // Show processing message
-        await reply("⚽ Fetching Premier League data...");
+        // Fetch all data concurrently
+        const [standingsData, scorersData, matchesData] = await Promise.all([
+            fetchWithCache('standings', 'https://api.football-data.org/v4/competitions/PL/standings'),
+            fetchWithCache('scorers', 'https://api.football-data.org/v4/competitions/PL/scorers?limit=5'),
+            fetchWithCache('matches', 'https://api.football-data.org/v4/competitions/PL/matches?status=SCHEDULED&limit=5')
+        ]);
 
-        if (!command || command === 'standings') {
-            // Get league standings
-            const standingsData = await fetchWithCache(
-                'standings', 
-                'https://api.football-data.org/v4/competitions/PL/standings'
-            );
+        // Extract key information
+        const competition = standingsData.competition;
+        const standings = standingsData.standings[0].table.slice(0, 6);
+        const topScorers = scorersData.scorers.slice(0, 5);
+        const nextMatches = matchesData.matches;
+        const currentMatchday = standingsData.season.currentMatchday;
+        
+        // Create formatted output
+        let eplInfo = `
+╭───「 🏴󠁧󠁢󠁥󠁮󠁧󠁿 *ENGLISH PREMIER LEAGUE* 」───
+│
+├ 🗓️ *Season:* ${competition.name} ${standingsData.season.startDate.slice(0,4)}-${standingsData.season.endDate.slice(0,4)}
+├ 📅 *Current Matchday:* ${currentMatchday}
+├ 🔄 *Updated:* ${moment(competition.lastUpdated).format("DD MMM YYYY HH:mm")}
+│
+╭───「 🏆 *STANDINGS (TOP 6)* 」───
+│
+${standings.map(team => {
+    const position = team.position.toString().padEnd(2);
+    const name = team.team.shortName.padEnd(14);
+    const points = team.points.toString().padStart(2);
+    return `├ ${position}. ${name} ⚽ ${team.playedGames}  ✅ ${team.won}  🤝 ${team.draw}  ❌ ${team.lost}  💯 ${points}`;
+}).join('\n')}
+│
+├───「 ⚽ *TOP SCORERS* 」───
+│
+${topScorers.map((player, index) => {
+    const medal = ['🥇', '🥈', '🥉'][index] || '⚽';
+    return `├ ${medal} ${player.player.name.padEnd(18)} ${player.goals} goals (${player.team.shortName})`;
+}).join('\n')}
+│
+├───「 📅 *NEXT FIXTURES* 」───
+│
+${nextMatches.map(match => {
+    const date = moment(match.utcDate).tz('Europe/London').format("DD/MM HH:mm");
+    return `├ ⚔️ ${match.homeTeam.shortName} vs ${match.awayTeam.shortName}\n   ├ 🕒 ${date} | 🏟️ ${match.matchday}`;
+}).join('\n')}
+│
+╰───「 🔚 *END OF EPL UPDATE* 」───
+        `.trim();
 
-            const standings = standingsData.standings[0].table;
-            let standingsText = "🏆 *PREMIER LEAGUE STANDINGS* 🏆\n\n";
-            
-            standings.slice(0, 10).forEach((team, index) => {
-                const emoji = index < 4 ? "🔵" : index === 4 ? "🟢" : "⚪";
-                standingsText += `${emoji} *${team.position}.* ${team.team.name}\n`;
-                standingsText += `   📊 P: ${team.playedGames} | W: ${team.won} | D: ${team.draw} | L: ${team.lost}\n`;
-                standingsText += `   ⚽ GF: ${team.goalsFor} | GA: ${team.goalsAgainst} | GD: ${team.goalDifference}\n`;
-                standingsText += `   💯 Points: ${team.points}\n\n`;
-            });
-
-            standingsText += "🔵 UCL | 🟢 UEL | ⚪ Other\n";
-            standingsText += "Updated: " + moment(standingsData.competition.lastUpdated).format("DD MMM YYYY HH:mm");
-            
-            await reply(standingsText);
-        }
-        else if (command === 'scorers') {
-            // Get top scorers
-            const scorersData = await fetchWithCache(
-                'scorers',
-                'https://api.football-data.org/v4/competitions/PL/scorers'
-            );
-
-            let scorersText = "👑 *TOP EPL GOAL SCORERS* 👑\n\n";
-            
-            scorersData.scorers.slice(0, 10).forEach((player, index) => {
-                const emoji = index < 3 ? "🥇" : "⚽";
-                scorersText += `${emoji} *${player.player.name}* (${player.team.name})\n`;
-                scorersText += `   🎯 Goals: ${player.goals} | 🎭 Assists: ${player.assists || 'N/A'}\n`;
-                scorersText += `   ⏱️ Minutes: ${player.playedMinutes}\n\n`;
-            });
-
-            await reply(scorersText);
-        }
-        else if (command === 'matches') {
-            // Get recent/fixtures
-            const matchesData = await fetchWithCache(
-                'matches',
-                'https://api.football-data.org/v4/competitions/PL/matches?status=SCHEDULED'
-            );
-
-            const now = new Date();
-            const nextMatches = matchesData.matches
-                .filter(match => new Date(match.utcDate) > now)
-                .slice(0, 5);
-
-            let matchesText = "📅 *UPCOMING EPL FIXTURES* 📅\n\n";
-            
-            nextMatches.forEach(match => {
-                const matchDate = moment(match.utcDate).tz('Europe/London').format("ddd, DD MMM HH:mm");
-                matchesText += `⚔️ ${match.homeTeam.name} vs ${match.awayTeam.name}\n`;
-                matchesText += `   🕒 ${matchDate} (BST)\n`;
-                matchesText += `   🏟️ ${match.venue || 'Unknown Stadium'}\n\n`;
-            });
-
-            await reply(matchesText);
-        }
-        else {
-            reply("⚽ *Available EPL Commands:*\n" +
-                "• `.epl standings` - Current league table\n" +
-                "• `.epl scorers` - Top goal scorers\n" +
-                "• `.epl matches` - Upcoming fixtures");
-        }
+        // Send the comprehensive EPL info
+        await conn.sendMessage(from, {
+            text: eplInfo,
+            contextInfo: {
+                externalAdReply: {
+                    title: "PREMIER LEAGUE UPDATE",
+                    body: `Matchday ${currentMatchday} | Powered by football-data.org`,
+                    thumbnailUrl: "https://img.freepik.com/premium-vector/golden-soccer-ball-championship-cup-trophy_1366-266.jpg",
+                    sourceUrl: "https://www.premierleague.com",
+                    mediaType: 1,
+                    renderLargerThumbnail: false,
+                    showAdAttribution: true
+                },
+                forwardingScore: 999,
+                isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                    newsletterJid: "120363288304618280@newsletter",
+                    newsletterName: "PK-XMD Sports Updates",
+                    serverMessageId: Math.floor(Math.random() * 1000000).toString(),
+                }
+            }
+        }, { quoted: fakeContact });
 
     } catch (error) {
         console.error("EPL Command Error:", error);
