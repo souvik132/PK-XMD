@@ -33,7 +33,7 @@ cmd({
 
             const response = await axios.get(url, {
                 headers: {
-                    'X-Auth-Token': 'YOUR_API_KEY_HERE' // Get free key from football-data.org
+                    'X-Auth-Token': '7bcc01e07abe477191649864d254b301' // Get free key from football-data.org
                 }
             });
 
