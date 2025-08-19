@@ -23,20 +23,30 @@ cmd({
             return reply("❌ Please provide a country code. Example: `.check 254`");
         }
 
-        // Remove '+' sign if present
-        code = code.replace(/\+/g, '');
+        // Remove '+' sign if present and any non-digit characters
+        code = code.replace(/\D/g, '');
 
-        // Fetch countries using the updated REST Countries v3 API
-        const url = "https://restcountries.com/v3.1/all";
+        // Fetch countries using the REST Countries v3.1 API with fields filtering
+        const url = `https://restcountries.com/v3.1/all?fields=name,cca2,idd,flags`;
         const { data } = await axios.get(url);
 
-        // Filter countries whose calling codes (idd.root + idd.suffixes) include the given code
+        // Filter countries whose calling codes match the given code
         const matchingCountries = data.filter(country => {
-            if (!country.idd || !country.idd.root || !country.idd.suffixes) return false;
-            const fullCodes = country.idd.suffixes.map(suffix => 
-                (country.idd.root + suffix).replace('+', '')
-            );
-            return fullCodes.includes(code);
+            if (!country.idd || !country.idd.root) return false;
+            
+            // Handle cases where suffixes might be missing or the root contains the full code
+            const rootCode = country.idd.root.replace(/\D/g, '');
+            
+            // If no suffixes, check if root matches directly
+            if (!country.idd.suffixes || country.idd.suffixes.length === 0) {
+                return rootCode === code;
+            }
+            
+            // Check all possible combinations of root + suffixes
+            return country.idd.suffixes.some(suffix => {
+                const fullCode = (rootCode + suffix).replace(/\D/g, '');
+                return fullCode === code;
+            });
         });
 
         if (matchingCountries.length > 0) {
@@ -61,7 +71,7 @@ cmd({
             };
 
             await conn.sendMessage(m.chat, {
-                text: `✅ *Country Code*: +${code}\n🌍 *Countries*:\n${countryNames}`,
+                text: `✅ *Country Code*: +${code}\n🌍 *Countries*:\n${countryNames}\n\n📌 *Total Matches*: ${matchingCountries.length}`,
                 contextInfo: {
                     externalAdReply: {
                         title: "COUNTRY CODE LOOKUP",
@@ -83,10 +93,10 @@ cmd({
             }, { quoted: fakeContact });
 
         } else {
-            reply(`❌ No country found for the code ${code}.`);
+            reply(`❌ No country found for the code +${code}.`);
         }
     } catch (error) {
         console.error("Check Error:", error);
-        reply("❌ An error occurred while checking the country code.");
+        reply("❌ An error occurred while checking the country code. Please try again later.");
     }
 });
