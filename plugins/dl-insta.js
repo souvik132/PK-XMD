@@ -17,26 +17,55 @@ cmd({
     // Show processing indicator
     await conn.sendMessage(from, { react: { text: "⏳", key: m.key } });
 
-    // New reliable API endpoint
-    const apiUrl = `https://api.irvyn.xyz/igdl?url=${encodeURIComponent(q)}`;
-    
-    // Fetch data from API
-    const { data } = await axios.get(apiUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
-      }
-    });
+    // New reliable API endpoint with multiple fallback options
+    const apiUrls = [
+      `https://instagram-downloader-download-instagram-videos-stories.p.rapidapi.com/index?url=${encodeURIComponent(q)}`,
+      `https://api.instagramsaver.xyz/?url=${encodeURIComponent(q)}`,
+      `https://api.fgmods.xyz/api/downloader/instagram?url=${encodeURIComponent(q)}&apikey=fg-dylux`
+    ];
 
-    // Validate response
-    if (!data || !data.data || !data.data.length) {
-      return reply("⚠️ Failed to fetch media. Please check the link or try again later.");
+    let mediaData;
+    let apiError;
+
+    for (const apiUrl of apiUrls) {
+      try {
+        const { data } = await axios.get(apiUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+            'X-RapidAPI-Key': 'dummy-key' // Some APIs require any key
+          },
+          timeout: 10000
+        });
+
+        // Handle different API response formats
+        if (data.videoUrl || data.url) {
+          mediaData = {
+            url: data.videoUrl || data.url,
+            type: "video",
+            caption: data.caption || ""
+          };
+          break;
+        } else if (data.media) {
+          mediaData = {
+            url: data.media,
+            type: data.media.includes('.mp4') ? 'video' : 'image',
+            caption: data.caption || ""
+          };
+          break;
+        }
+      } catch (error) {
+        apiError = error;
+        console.log(`API ${apiUrl} failed, trying next...`);
+      }
     }
 
-    const mediaData = data.data[0];
-    const mediaUrl = mediaData.url;
-    const mediaType = mediaUrl.includes('.mp4') ? 'video' : 'image';
+    if (!mediaData) {
+      return reply("⚠️ All download services failed. Try again later or use a different link.");
+    }
+
     const caption = `📸 *Instagram Download*\n\n` +
-                   `> *Powerd By Pkdriller*\n` +
+                   `${mediaData.caption ? `✏️ *Caption:* ${mediaData.caption}\n\n` : ''}` +
+                   `> *Powered By PKDriller*\n` +
                    `🔗 *Original URL:* ${q}`;
 
     // Fake contact for context
@@ -59,7 +88,7 @@ cmd({
     await conn.sendMessage(
       from,
       {
-        [mediaType]: { url: mediaUrl },
+        [mediaData.type]: { url: mediaData.url },
         caption: caption,
         contextInfo: {
           externalAdReply: {
