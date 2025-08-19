@@ -55,7 +55,7 @@ cmd({
                 text: `🔍 *Image Search Results for:* ${query}\n\n` +
                       `📸 Found *${results.length}* images\n` +
                       `🖼️ Sending *${selectedImages.length}* random samples\n\n` +
-                      `> © Powered by JawadTechX & PK-XMD`,
+                      `> © Powered by PK-XMD`,
                 contextInfo: {
                     externalAdReply: {
                         title: "GOOGLE IMAGE SEARCH",
@@ -78,25 +78,4 @@ cmd({
             { quoted: fakeContact }
         );
 
-        // Send images with reference to context message
-        for (const imageUrl of selectedImages) {
-            await conn.sendMessage(
-                from,
-                { 
-                    image: { url: imageUrl },
-                    caption: `📷 ${query}\n> © Powered by JawadTechX`,
-                    contextInfo: {
-                        stanzaId: contextMessage.key.id,
-                        participant: '0@s.whatsapp.net'
-                    }
-                }
-            );
-            // Add delay between sends to avoid rate limiting
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-
-    } catch (error) {
-        console.error('Image Search Error:', error);
-        reply(`❌ Error: ${error.message || "Failed to fetch images"}`);
-    }
-});
+   
