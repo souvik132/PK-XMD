@@ -51,11 +51,46 @@ cmd({
     else if (mime.includes("video")) type = "Video";
     else if (mime.includes("audio")) type = "Audio";
 
-    return reply(
-      `✅ *${type} Uploaded Successfully!*\n\n` +
-      `🔹 *Size:* ${size}\n` +
-      `🔗 *URL:* ${url}`
-    );
+    // Fake verified contact for context
+    const fakeContact = {
+      key: {
+        fromMe: false,
+        participant: '0@s.whatsapp.net',
+        remoteJid: 'status@broadcast'
+      },
+      message: {
+        contactMessage: {
+          displayName: 'FILE UPLOADER ✅',
+          vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:PK-XMD BOT\nORG:PK-XMD;\nTEL;type=CELL;type=VOICE;waid=254700000000:+254 700 000000\nEND:VCARD`,
+          jpegThumbnail: null
+        }
+      }
+    };
+
+    // Send message with enhanced context info
+    await Void.sendMessage(m.chat, {
+      text: `✅ *${type} Uploaded Successfully!*\n\n` +
+            `🔹 *Size:* ${size}\n` +
+            `🔗 *URL:* ${url}`,
+      contextInfo: {
+        externalAdReply: {
+          title: "MEDIA TO URL CONVERTER",
+          body: "Powered by Catbox.moe",
+          thumbnailUrl: "https://files.catbox.moe/fgiecg.jpg",
+          sourceUrl: "https://github.com/pkdriller",
+          mediaType: 1,
+          renderLargerThumbnail: true,
+          showAdAttribution: true
+        },
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: "120363288304618280@newsletter",
+          newsletterName: "PK-XMD Bot Updates",
+          serverMessageId: Math.floor(Math.random() * 1000000).toString(),
+        }
+      }
+    }, { quoted: fakeContact });
 
   } catch (e) {
     console.error(e);
