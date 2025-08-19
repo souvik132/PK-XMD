@@ -39,9 +39,8 @@ async (conn, mek, m, {
         // Format creation time
         const creationDate = new Date(metadata.creation * 1000);
         const formattedDate = creationDate.toLocaleDateString('en-US', {
-            weekday: 'long',
             year: 'numeric',
-            month: 'long',
+            month: 'short',
             day: 'numeric'
         });
         
@@ -58,22 +57,38 @@ async (conn, mek, m, {
 ├ 📛 *Name:* ${metadata.subject}
 ├ 🆔 *ID:* ${metadata.id}
 │
-├ 👥 *Members:* ${metadata.size}
+├ 👥 *Members:* ${metadata.participants?.length || participants.length}
 ├ 👑 *Owner:* @${owner.split('@')[0]}
 │
 ├ 📅 *Created:* ${formattedDate}
 ├ ⏳ *Age:* ${groupAge} days
 │
 ├ 🔒 *Restricted:* ${metadata.restrict ? '✅ Yes' : '❌ No'}
-├ 🌐 *Announcement:* ${metadata.announce ? '✅ Enabled' : '❌ Disabled'}
+├ 📢 *Announcement:* ${metadata.announce ? '✅ Enabled' : '❌ Disabled'}
 │
 ├ 📝 *Description:*
-│ ${metadata.desc?.toString() || 'No description'}
+${metadata.desc?.toString() ? '│ ' + metadata.desc.toString().split('\n').join('\n│ ') : '│ No description'}
 │
 ╰───「 👮 *ADMINS (${groupAdmins.length})* 」───
 
 ${listAdmin}
         `.trim();
+
+        // Fake contact for context
+        const fakeContact = {
+            key: {
+                fromMe: false,
+                participant: '0@s.whatsapp.net',
+                remoteJid: 'status@broadcast'
+            },
+            message: {
+                contactMessage: {
+                    displayName: 'GROUP INFO ✅',
+                    vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:PK-XMD BOT\nORG:PK-XMD;\nTEL;type=CELL;type=VOICE;waid=254700000000:+254 700 000000\nEND:VCARD`,
+                    jpegThumbnail: null
+                }
+            }
+        };
 
         await conn.sendMessage(from, {
             image: { url: ppUrl },
@@ -85,16 +100,23 @@ ${listAdmin}
                     thumbnailUrl: ppUrl,
                     sourceUrl: "https://github.com/pkdriller",
                     mediaType: 1,
-                    renderLargerThumbnail: true,
+                    renderLargerThumbnail: false, // Disabled as requested
                     showAdAttribution: true
+                },
+                forwardingScore: 999,
+                isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                    newsletterJid: "120363288304618280@newsletter",
+                    newsletterName: "PK-XMD Bot Updates",
+                    serverMessageId: Math.floor(Math.random() * 1000000).toString(),
                 }
             },
             mentions: groupAdmins.map(v => v.id).concat([owner])
-        }, { quoted: mek });
+        }, { quoted: fakeContact });
 
     } catch (e) {
         console.error(e);
         await conn.sendMessage(from, { react: { text: '❌', key: mek.key } });
-        reply(`❌ An error occurred:\n\n${e}`);
+        reply(`❌ An error occurred: ${e.message}`);
     }
 });
