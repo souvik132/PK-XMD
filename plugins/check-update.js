@@ -42,7 +42,7 @@ cmd({
     }
 
     // Fetch latest version data from GitHub
-    const rawVersionUrl = 'https://raw.githubusercontent.com/mejjar00254/PK-XMD/main/data/version.json';
+    const rawVersionUrl = 'https://raw.githubusercontent.com/officialPkdriller/PK-XMD/main/data/version.json';
     let latestVersion = 'Unknown';
     let latestChangelog = 'No changelog available.';
     try {
