@@ -41,7 +41,7 @@ cmd({
     forwardingScore: 999,
     isForwarded: true,
     forwardedNewsletterMessageInfo: {
-      newsletterJid: "120363288304618280@newsletter",
+      newsletterJid: "```120363401951044985@g.us```",
       newsletterName: "PK-XMD Official"
     }
   };
