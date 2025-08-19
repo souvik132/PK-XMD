@@ -1,6 +1,6 @@
 {
   "name": "PK-XMD",
-  "description": "Javascript WhatsApp bot made by novaxmd",
+  "description": "Javascript WhatsApp bot made by Pkdriller",
   "logo": "https://files.catbox.moe/fgiecg.jpg",
   "keywords": ["PK-XMD"],
   "success_url": "/",
@@ -154,7 +154,7 @@
     "WELCOME": {
       "description": "make it true if want goodbye and welcome message in groups.",
       "required": false,
-      "value": "true"
+      "value": "false"
     },
     "READ_MESSAGE": {
       "description": "Make it true if you want bot read your all sms just now.",
