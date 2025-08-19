@@ -1,1 +1,116 @@
-const _0x318bf6=_0x11b6;(function(_0x211d20,_0x4317e3){const _0x17b6e5=_0x11b6,_0x3dd4e8=_0x211d20();while(!![]){try{const _0x19372b=parseInt(_0x17b6e5(0xeb))/0x1+parseInt(_0x17b6e5(0xe6))/0x2*(-parseInt(_0x17b6e5(0xec))/0x3)+parseInt(_0x17b6e5(0xea))/0x4*(-parseInt(_0x17b6e5(0xdd))/0x5)+parseInt(_0x17b6e5(0xf5))/0x6*(-parseInt(_0x17b6e5(0xd8))/0x7)+-parseInt(_0x17b6e5(0xf1))/0x8*(-parseInt(_0x17b6e5(0xd9))/0x9)+-parseInt(_0x17b6e5(0xf9))/0xa*(parseInt(_0x17b6e5(0xe9))/0xb)+parseInt(_0x17b6e5(0xfb))/0xc*(parseInt(_0x17b6e5(0xee))/0xd);if(_0x19372b===_0x4317e3)break;else _0x3dd4e8['push'](_0x3dd4e8['shift']());}catch(_0x1aeff4){_0x3dd4e8['push'](_0x3dd4e8['shift']());}}}(_0x5b7d,0xf2695));function _0x11b6(_0x51f3c9,_0x792c27){const _0x5b7d5a=_0x5b7d();return _0x11b6=function(_0x11b653,_0x41529e){_0x11b653=_0x11b653-0xd7;let _0x493fde=_0x5b7d5a[_0x11b653];return _0x493fde;},_0x11b6(_0x51f3c9,_0x792c27);}const {cmd}=require(_0x318bf6(0x101)),axios=require(_0x318bf6(0xe4));function _0x5b7d(){const _0x4749e9=['731926KtelpE','arraybuffer','❌\x20Error:\x20','482456iWkogG','Generate\x20image\x20using\x20Stability\x20AI','https://api.siputzx.my.id/api/ai/stable-diffusion?prompt=','\x0a\x0a⚡\x20*Powered\x20by\x20PK-XMD*\x0a🌟\x20*PK-TECH\x20Development*','6wBietI','from','chat','Generate\x20an\x20image\x20using\x20Flux\x20AI','113020swZdVS','flux','876YLAmKc','>\x20*Generating\x20Flux\x20AI\x20Image...*\x20✨','stability','pk-tech','🤖\x20*Stability\x20AI\x20Creation*\x0a\x0a✨\x20*Prompt:*\x20','>\x20*Generating\x20Stability\x20AI\x20Image...*\x20🎭','../command','stablediffusion','12449241psruTp','279WepfGZ','response','error','❌\x20Image\x20generation\x20failed','105ZxWQMU','data','Failed\x20to\x20generate\x20image','❌\x20Please\x20provide\x20an\x20image\x20prompt','120363288304618280@newsletter','fluxai','get','axios','binary','222lGAvzW','sendMessage','message','814PXzsuP','258964vuUNwI','921013ZyNBOD','52251pQlZLj','imagine2'];_0x5b7d=function(){return _0x4749e9;};return _0x5b7d();}cmd({'pattern':_0x318bf6(0xe2),'alias':[_0x318bf6(0xfa),'imagine'],'react':'🚀','desc':_0x318bf6(0xf8),'category':'ai','filename':__filename},async(_0x1593c4,_0x318fe0,_0x10f8ae,{q:_0x5a5d6e,reply:_0x26441d})=>{const _0x32e945=_0x318bf6;try{if(!_0x5a5d6e)return _0x26441d(_0x32e945(0xe0));await _0x26441d(_0x32e945(0xfc));const _0x459562='https://api.siputzx.my.id/api/ai/flux?prompt='+encodeURIComponent(_0x5a5d6e),_0x186d68=await axios[_0x32e945(0xe3)](_0x459562,{'responseType':'arraybuffer'});if(!_0x186d68?.[_0x32e945(0xde)])return _0x26441d(_0x32e945(0xdc));await _0x1593c4[_0x32e945(0xe7)](_0x10f8ae[_0x32e945(0xf7)],{'image':Buffer[_0x32e945(0xf6)](_0x186d68[_0x32e945(0xde)],_0x32e945(0xe5)),'caption':'🖼️\x20*Flux\x20AI\x20Image\x20Generated*\x0a\x0a✨\x20*Prompt:*\x20'+_0x5a5d6e+_0x32e945(0xf4),'contextInfo':{'forwardingScore':0x3e7,'isForwarded':!![],'forwardedNewsletterMessageInfo':{'newsletterJid':_0x32e945(0xe1),'newsletterName':_0x32e945(0xfe),'serverMessageId':0xaf}}});}catch(_0x17d33e){console[_0x32e945(0xdb)]('FluxAI\x20Error:',_0x17d33e),_0x26441d(_0x32e945(0xf0)+(_0x17d33e['response']?.[_0x32e945(0xde)]?.[_0x32e945(0xe8)]||_0x17d33e[_0x32e945(0xe8)]||'Failed\x20to\x20generate\x20image'));}}),cmd({'pattern':_0x318bf6(0xd7),'alias':['sdiffusion',_0x318bf6(0xed)],'react':'🎨','desc':'Generate\x20image\x20using\x20Stable\x20Diffusion','category':'ai','filename':__filename},async(_0x35c38e,_0x4a9ce5,_0x4197ff,{q:_0x19a482,reply:_0x387f8f})=>{const _0x90e2e2=_0x318bf6;try{if(!_0x19a482)return _0x387f8f('❌\x20Please\x20provide\x20an\x20image\x20prompt');await _0x387f8f('>\x20*Generating\x20Stable\x20Diffusion\x20Image...*\x20🖌️');const _0x547090=_0x90e2e2(0xf3)+encodeURIComponent(_0x19a482),_0x445e68=await axios[_0x90e2e2(0xe3)](_0x547090,{'responseType':_0x90e2e2(0xef)});if(!_0x445e68?.[_0x90e2e2(0xde)])return _0x387f8f(_0x90e2e2(0xdc));await _0x35c38e[_0x90e2e2(0xe7)](_0x4197ff[_0x90e2e2(0xf7)],{'image':Buffer[_0x90e2e2(0xf6)](_0x445e68[_0x90e2e2(0xde)],'binary'),'caption':'🎨\x20*Stable\x20Diffusion\x20Art*\x0a\x0a✨\x20*Prompt:*\x20'+_0x19a482+_0x90e2e2(0xf4),'contextInfo':{'forwardingScore':0x3e7,'isForwarded':!![],'forwardedNewsletterMessageInfo':{'newsletterJid':_0x90e2e2(0xe1),'newsletterName':_0x90e2e2(0xfe),'serverMessageId':0xb0}}});}catch(_0x40b7ac){console[_0x90e2e2(0xdb)]('StableDiffusion\x20Error:',_0x40b7ac),_0x387f8f(_0x90e2e2(0xf0)+(_0x40b7ac[_0x90e2e2(0xda)]?.[_0x90e2e2(0xde)]?.[_0x90e2e2(0xe8)]||_0x40b7ac[_0x90e2e2(0xe8)]||_0x90e2e2(0xdf)));}}),cmd({'pattern':'stabilityai','alias':[_0x318bf6(0xfd),'imagine3'],'react':'🤖','desc':_0x318bf6(0xf2),'category':'ai','filename':__filename},async(_0x4d5c84,_0x5e64a8,_0x1941d8,{q:_0x1fdd01,reply:_0x17201e})=>{const _0x3fc283=_0x318bf6;try{if(!_0x1fdd01)return _0x17201e(_0x3fc283(0xe0));await _0x17201e(_0x3fc283(0x100));const _0x216d85='https://api.siputzx.my.id/api/ai/stabilityai?prompt='+encodeURIComponent(_0x1fdd01),_0xe1c46=await axios[_0x3fc283(0xe3)](_0x216d85,{'responseType':'arraybuffer'});if(!_0xe1c46?.[_0x3fc283(0xde)])return _0x17201e('❌\x20Image\x20generation\x20failed');await _0x4d5c84[_0x3fc283(0xe7)](_0x1941d8[_0x3fc283(0xf7)],{'image':Buffer[_0x3fc283(0xf6)](_0xe1c46['data'],_0x3fc283(0xe5)),'caption':_0x3fc283(0xff)+_0x1fdd01+'\x0a\x0a⚡\x20*Powered\x20by\x20PK-XMD*\x0a🌟\x20*PK-TECH\x20Development*','contextInfo':{'forwardingScore':0x3e7,'isForwarded':!![],'forwardedNewsletterMessageInfo':{'newsletterJid':'120363288304618280@newsletter','newsletterName':_0x3fc283(0xfe),'serverMessageId':0xb1}}});}catch(_0x494749){console['error']('StabilityAI\x20Error:',_0x494749),_0x17201e(_0x3fc283(0xf0)+(_0x494749[_0x3fc283(0xda)]?.[_0x3fc283(0xde)]?.[_0x3fc283(0xe8)]||_0x494749[_0x3fc283(0xe8)]||_0x3fc283(0xdf)));}});
+const { cmd } = require("../command");
+const axios = require("axios");
+
+cmd({
+  pattern: "fluxai",
+  alias: ["flux", "imagine"],
+  react: "🚀",
+  desc: "Generate an image using Flux AI",
+  category: "ai",
+  filename: __filename
+}, async (conn, mek, m, { q, reply }) => {
+  try {
+    if (!q) return reply("❌ Please provide an image prompt");
+
+    await reply("> *Generating Flux AI Image...* ✨");
+
+    const apiUrl = `https://api.siputzx.my.id/api/ai/flux?prompt=${encodeURIComponent(q)}`;
+    const response = await axios.get(apiUrl, { responseType: "arraybuffer" });
+
+    if (!response?.data) return reply("❌ Image generation failed");
+
+    await conn.sendMessage(m.chat, {
+      image: Buffer.from(response.data, "binary"),
+      caption: `🖼️ *Flux AI Image Generated*\n\n✨ *Prompt:* ${q}\n\n⚡ *Powered by NEXUS-AI*\n🌟 *PK-TECH Development*`,
+      contextInfo: {
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: '120363288304618280@newsletter',
+          newsletterName: "pk-tech",
+          serverMessageId: 175
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("FluxAI Error:", error);
+    reply(`❌ Error: ${error.response?.data?.message || error.message || "Failed to generate image"}`);
+  }
+});
+
+cmd({
+  pattern: "stablediffusion",
+  alias: ["sdiffusion", "imagine2"],
+  react: "🎨", 
+  desc: "Generate image using Stable Diffusion",
+  category: "ai",
+  filename: __filename
+}, async (conn, mek, m, { q, reply }) => {
+  try {
+    if (!q) return reply("❌ Please provide an image prompt");
+
+    await reply("> *Generating Stable Diffusion Image...* 🖌️");
+
+    const apiUrl = `https://api.siputzx.my.id/api/ai/stable-diffusion?prompt=${encodeURIComponent(q)}`;
+    const response = await axios.get(apiUrl, { responseType: "arraybuffer" });
+
+    if (!response?.data) return reply("❌ Image generation failed");
+
+    await conn.sendMessage(m.chat, {
+      image: Buffer.from(response.data, "binary"),
+      caption: `🎨 *Stable Diffusion Art*\n\n✨ *Prompt:* ${q}\n\n⚡ *Powered by NEXUS-AI*\n🌟 *PK-TECH Development*`,
+      contextInfo: {
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: '120363288304618280@newsletter',
+          newsletterName: "pk-tech",
+          serverMessageId: 176
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("StableDiffusion Error:", error);
+    reply(`❌ Error: ${error.response?.data?.message || error.message || "Failed to generate image"}`);
+  }
+});
+
+cmd({
+  pattern: "stabilityai", 
+  alias: ["stability", "imagine3"],
+  react: "🤖",
+  desc: "Generate image using Stability AI",
+  category: "ai",
+  filename: __filename
+}, async (conn, mek, m, { q, reply }) => {
+  try {
+    if (!q) return reply("❌ Please provide an image prompt");
+
+    await reply("> *Generating Stability AI Image...* 🎭");
+
+    const apiUrl = `https://api.siputzx.my.id/api/ai/stabilityai?prompt=${encodeURIComponent(q)}`;
+    const response = await axios.get(apiUrl, { responseType: "arraybuffer" });
+
+    if (!response?.data) return reply("❌ Image generation failed");
+
+    await conn.sendMessage(m.chat, {
+      image: Buffer.from(response.data, "binary"),
+      caption: `🤖 *Stability AI Creation*\n\n✨ *Prompt:* ${q}\n\n⚡ *Powered by NEXUS-AI*\n🌟 *PK-TECH Development*`,
+      contextInfo: {
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: '120363288304618280@newsletter',
+          newsletterName: "pk-tech",
+          serverMessageId: 177
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("StabilityAI Error:", error);
+    reply(`❌ Error: ${error.response?.data?.message || error.message || "Failed to generate image"}`);
+  }
+});
