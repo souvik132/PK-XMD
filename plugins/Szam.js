@@ -11,7 +11,7 @@ const acr = new acrcloud({
 
 cmd({
     pattern: "shazam",
-    alias: ["hansfind", "whatmusic"],
+    alias: ["pkfind", "whatmusic"],
     react: "🎶",
     desc: "Identify music from audio/video",
     category: "tools",
@@ -20,11 +20,16 @@ cmd({
 }, async (conn, mek, m, { from, quoted, reply }) => {
     try {
         const qmsg = quoted || m.quoted;
-        if (!qmsg || (qmsg.mtype !== 'audioMessage' && qmsg.mtype !== 'videoMessage')) {
+        if (!qmsg) return reply('🎧 Reply to an audio or video to identify the music.');
+
+        // Safely detect message type
+        const msgType = qmsg.mtype || Object.keys(qmsg.message || {})[0];
+
+        if (msgType !== 'audioMessage' && msgType !== 'videoMessage') {
             return reply('🎧 Reply to an audio or video to identify the music.');
         }
 
-        const mime = qmsg.mimetype || '';
+        const mime = qmsg.mimetype || qmsg.message[msgType]?.mimetype || '';
         if (!/audio|video/.test(mime)) {
             return reply('⚠️ Unsupported format. Reply to an audio or video message.');
         }
