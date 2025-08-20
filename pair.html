@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PK-XMD Voice & Type Input</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --neon-pink: #ff2d95;
+            --neon-blue: #00f3ff;
+            --neon-green: #00ff8c;
+            --neon-yellow: #fff000;
+            --neon-purple: #c96dff;
+            --dark-bg: #0a0a18;
+            --glass-bg: rgba(35, 35, 55, 0.85);
+            --glass-blur: 15px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f052d 0%, #22005a 30%, #0f2027 70%, #203a43 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5), 
+                        0 0 30px rgba(0, 243, 255, 0.2),
+                        0 0 60px rgba(255, 45, 149, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px var(--neon-purple);
+            color: var(--neon-yellow);
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        
+        .subtitle {
+            color: #ccc;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-pink) 100%);
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(232, 232, 232, 0.9);
+            color: #333;
+            font-size: 1.1rem;
+            border-left: 4px solid var(--neon-purple);
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-left: 4px solid var(--neon-green);
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+        
+        .voice-btn {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-pink) 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto;
+            width: 80%;
+        }
+        
+        .voice-btn:hover {
+            background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-purple) 100%);
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+        
+        .voice-btn.listening {
+            animation: pulse 1.5s infinite;
+            background: linear-gradient(135deg, var(--neon-green) 0%, var(--neon-blue) 100%);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .voice-status {
+            min-height: 30px;
+            margin: 15px 0;
+            color: var(--neon-blue);
+            font-weight: 500;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, var(--neon-green) 0%, var(--neon-blue) 100%);
+            color: #000;
+        }
+        
+        .submit-btn:hover {
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+        
+        .clear-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+        
+        .clear-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .instructions h3 {
+            color: var(--neon-yellow);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+            transform: translateX(100vw);
+            transition: transform 0.5s ease-in-out;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .code-display {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            font-family: monospace;
+            font-size: 1.2rem;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 10px var(--neon-yellow);
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .voice-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle" style="color: var(--neon-green); font-size: 1.5rem;"></i>
+        <span id="notification-text">Number copied to clipboard!</span>
+    </div>
+    
+    <div class="container">
+        <div class="logo">
+            <i class="fab fa-whatsapp"></i>
+        </div>
+        
+        <h1>PK-XMD Code Input</h1>
+        <p class="subtitle">Enter your code by typing or using voice</p>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="type">Type Code</div>
+            <div class="tab" data-tab="voice">Voice Input</div>
+        </div>
+        
+        <div class="input-sections">
+            <!-- Type Input Section -->
+            <div class="input-section" id="type-section">
+                <div class="input-group">
+                    <input type="text" id="codeInput" placeholder="Type your code here">
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn submit-btn" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Submit Code
+                    </button>
+                    <button class="action-btn clear-btn" id="clearBtn">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Voice Input Section -->
+            <div class="input-section" id="voice-section" style="display: none;">
+                <button class="voice-btn" id="voiceBtn">
+                    <i class="fas fa-microphone"></i> Start Listening
+                </button>
+                
+                <div class="voice-status" id="voiceStatus">
+                    Ready to listen for code...
+                </div>
+                
+                <div class="code-display" id="voiceCodeDisplay">
+                    Your code will appear here
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn submit-btn" id="submitVoiceBtn">
+                        <i class="fas fa-paper-plane"></i> Submit Code
+                    </button>
+                    <button class="action-btn clear-btn" id="clearVoiceBtn">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> Voice Input Tips</h3>
+            <ul>
+                <li>Make sure you're in a quiet environment</li>
+                <li>Speak clearly and at a moderate pace</li>
+                <li>For codes with letters and numbers, say "alpha" for A, "bravo" for B, etc.</li>
+                <li>Say "dash" or "hyphen" for separator characters</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Create particle effect
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 40;
+            const colors = [
+                'var(--neon-pink)', 
+                'var(--neon-blue)', 
+                'var(--neon-green)', 
+                'var(--neon-yellow)', 
+                'var(--neon-purple)'
+            ];
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 15 + 5;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.background = color;
+                particle.style.boxShadow = `0 0 ${size * 2}px ${size}px ${color}`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${Math.random() * 15 + 10}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Tab switching functionality
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const typeSection = document.getElementById('type-section');
+            const voiceSection = document.getElementById('voice-section');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Show the corresponding section
+                    if (tab.dataset.tab === 'type') {
+                        typeSection.style.display = 'block';
+                        voiceSection.style.display = 'none';
+                    } else {
+                        typeSection.style.display = 'none';
+                        voiceSection.style.display = 'block';
+                    }
+                });
+            });
+        }
+        
+        // Voice recognition function
+        function setupVoiceRecognition() {
+            const voiceBtn = document.getElementById('voiceBtn');
+            const voiceStatus = document.getElementById('voiceStatus');
+            const voiceCodeDisplay = document.getElementById('voiceCodeDisplay');
+            
+            // Check if browser supports speech recognition
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                voiceStatus.innerHTML = 'Speech recognition not supported in this browser. Try Chrome or Edge.';
+                voiceBtn.disabled = true;
+                return;
+            }
+            
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+            
+            let finalTranscript = '';
+            
+            voiceBtn.addEventListener('click', () => {
+                if (voiceBtn.classList.contains('listening')) {
+                    recognition.stop();
+                    voiceBtn.classList.remove('listening');
+                    voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> Start Listening';
+                    voiceStatus.textContent = 'Recognition stopped';
+                } else {
+                    finalTranscript = '';
+                    recognition.start();
+                    voiceBtn.classList.add('listening');
+                    voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i> Stop Listening';
+                    voiceStatus.textContent = 'Listening... Speak now';
+                }
+            });
+            
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+                
+                // Process the text to create a more code-friendly format
+                let processedText = finalTranscript + interimTranscript;
+                
+                // Convert words to potential code elements
+                processedText = processedText
+                    .replace(/alpha/gi, 'A')
+                    .replace(/bravo/gi, 'B')
+                    .replace(/charlie/gi, 'C')
+                    .replace(/delta/gi, 'D')
+                    .replace(/echo/gi, 'E')
+                    .replace(/foxtrot/gi, 'F')
+                    .replace(/golf/gi, 'G')
+                    .replace(/hotel/gi, 'H')
+                    .replace(/india/gi, 'I')
+                    .replace(/juliet/gi, 'J')
+                    .replace(/kilo/gi, 'K')
+                    .replace(/lima/gi, 'L')
+                    .replace(/mike/gi, 'M')
+                    .replace(/november/gi, 'N')
+                    .replace(/oscar/gi, 'O')
+                    .replace(/papa/gi, 'P')
+                    .replace(/quebec/gi, 'Q')
+                    .replace(/romeo/gi, 'R')
+                    .replace(/sierra/gi, 'S')
+                    .replace(/tango/gi, 'T')
+                    .replace(/uniform/gi, 'U')
+                    .replace(/victor/gi, 'V')
+                    .replace(/whiskey/gi, 'W')
+                    .replace(/x-ray/gi, 'X')
+                    .replace(/yankee/gi, 'Y')
+                    .replace(/zulu/gi, 'Z')
+                    .replace(/dash|hyphen/gi, '-')
+                    .replace(/underscore/gi, '_')
+                    .replace(/space/gi, ' ')
+                    .replace(/dot|period/gi, '.');
+                
+                voiceCodeDisplay.textContent = processedText;
+            };
+            
+            recognition.onerror = (event) => {
+                voiceStatus.textContent = `Error: ${event.error}`;
+                voiceBtn.classList.remove('listening');
+                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> Start Listening';
+            };
+            
+            recognition.onend = () => {
+                if (voiceBtn.classList.contains('listening')) {
+                    voiceBtn.classList.remove('listening');
+                    voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> Start Listening';
+                    voiceStatus.textContent = 'Listening ended';
+                }
+            };
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Setup button handlers
+        function setupButtons() {
+            const submitBtn = document.getElementById('submitBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const submitVoiceBtn = document.getElementById('submitVoiceBtn');
+            const clearVoiceBtn = document.getElementById('clearVoiceBtn');
+            const codeInput = document.getElementById('codeInput');
+            const voiceCodeDisplay = document.getElementById('voiceCodeDisplay');
+            
+            // Type section buttons
+            submitBtn.addEventListener('click', () => {
+                if (codeInput.value.trim() === '') {
+                    showNotification('Please enter a code first');
+                    return;
+                }
+                
+                showNotification(`Code "${codeInput.value}" submitted!`);
+                // In a real application, you would process the code here
+            });
+            
+            clearBtn.addEventListener('click', () => {
+                codeInput.value = '';
+                showNotification('Input cleared');
+            });
+            
+            // Voice section buttons
+            submitVoiceBtn.addEventListener('click', () => {
+                if (voiceCodeDisplay.textContent === 'Your code will appear here') {
+                    showNotification('Please capture a code using voice first');
+                    return;
+                }
+                
+                showNotification(`Code "${voiceCodeDisplay.textContent}" submitted!`);
+                // In a real application, you would process the code here
+            });
+            
+            clearVoiceBtn.addEventListener('click', () => {
+                voiceCodeDisplay.textContent = 'Your code will appear here';
+                showNotification('Voice input cleared');
+            });
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            setupTabs();
+            setupVoiceRecognition();
+            setupButtons();
+        });
+    </script>
+</body>
+</html>
