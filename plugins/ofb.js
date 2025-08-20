@@ -4,14 +4,13 @@ cmd({
     pattern: "obfuscate",
     alias: ["obf", "securejs"],
     desc: "Obfuscate JavaScript code",
-    react: "🔒",
     category: "utility",
-    use: 'Reply to a JavaScript message with .obfuscate',
+    use: '.obfuscate <your js code> OR reply to a code message',
     filename: __filename
 },
-async (conn, mek, m, { from, reply, quoted }) => {
+async (conn, mek, m, { from, reply, quoted, args }) => {
     try {
-        // Try to load the obfuscator package
+        // Load obfuscator package
         let JavaScriptObfuscator;
         try {
             JavaScriptObfuscator = require('javascript-obfuscator');
@@ -24,13 +23,17 @@ async (conn, mek, m, { from, reply, quoted }) => {
             );
         }
 
-        // Check if it's a reply
-        if (!quoted || !quoted.text) {
-            return reply("❌ Please reply to a JavaScript code message");
+        // Check source code (either reply OR inline args)
+        const originalCode = 
+            quoted?.text || 
+            quoted?.message?.conversation || 
+            quoted?.message?.extendedTextMessage?.text || 
+            (args.length > 0 ? args.join(" ") : null);
+
+        if (!originalCode) {
+            return reply("❌ Please reply to a JavaScript code OR provide code after `.obfuscate`");
         }
 
-        const originalCode = quoted.text;
-        
         // Obfuscation options (high security)
         const obfuscationOptions = {
             compact: true,
@@ -53,11 +56,11 @@ async (conn, mek, m, { from, reply, quoted }) => {
             unicodeEscapeSequence: true
         };
 
-        // Obfuscate the code
+        // Run obfuscation
         const obfuscatedResult = JavaScriptObfuscator.obfuscate(originalCode, obfuscationOptions);
         const obfuscatedCode = obfuscatedResult.getObfuscatedCode();
 
-        // Create before/after comparison
+        // Preview comparison
         const comparison = `
 📜 *ORIGINAL CODE (${formatBytes(originalCode.length)}):*
 \`\`\`javascript
@@ -72,12 +75,11 @@ ${truncate(obfuscatedCode, 300)}
 ✅ Obfuscation complete! Sending secured code file...
 `.trim();
 
-        // Send the comparison as a message
         await reply(comparison);
 
-        // Send the full obfuscated code as a text file
+        // Send full file
         await conn.sendMessage(
-            from, 
+            from,
             {
                 document: Buffer.from(obfuscatedCode),
                 fileName: 'secured_code.js',
