@@ -118,14 +118,14 @@ cmd({
           externalAdReply: {
             title: "🎬 PK-XMD Video Downloader",
             body: "Powered by Pkdriller",
-            thumbnailUrl: videoThumbnail || "https://telegra.ph/file/7f82f0f543a55.png",
+            thumbnailUrl: videoThumbnail || "",
             sourceUrl: videoUrl,
             mediaType: 1,
-            renderLargerThumbnail: true,
+            renderLargerThumbnail: false,
           },
           mentionedJid: [m.sender],
           forwardedNewsletterMessageInfo: {
-            newsletterJid: "120363322466963620@newsletter",
+            newsletterJid: "120363288304618280@newsletter",
             newsletterName: "PK-XMD Official",
             serverMessageId: 144,
           },
