@@ -1,110 +1,60 @@
 const { cmd } = require('../command');
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 
 cmd({
     pattern: "obfuscate",
-    alias: ["obf", "securejs"],
-    desc: "Obfuscate JavaScript code",
-    category: "utility",
-    use: '.obfuscate <your js code> OR reply to a code message',
+    desc: "Obfuscate replied JavaScript code.",
+    category: "tools",
+    use: '.obfuscate (reply to .js code)',
     filename: __filename
-},
-async (conn, mek, m, { from, reply, quoted, args }) => {
+}, async (conn, mek, m, { args, reply }) => {
     try {
-        // Load obfuscator package
-        let JavaScriptObfuscator;
-        try {
-            JavaScriptObfuscator = require('javascript-obfuscator');
-        } catch (e) {
-            return reply(
-                "❌ Package not installed!\n\n" +
-                "Run this command to install:\n" +
-                "```bash\nnpm install javascript-obfuscator\n```" +
-                "\nThen restart your bot."
-            );
+        if (!m.quoted) return reply("⚠️ Reply to a JavaScript code with `.obfuscate`");
+
+        let code = m.quoted.text || "";
+        if (!code.includes("function") && !code.includes("const") && !code.includes("let")) {
+            return reply("⚠️ The replied message does not look like valid JavaScript code.");
         }
 
-        // Check source code (either reply OR inline args)
-        const originalCode = 
-            quoted?.text || 
-            quoted?.message?.conversation || 
-            quoted?.message?.extendedTextMessage?.text || 
-            (args.length > 0 ? args.join(" ") : null);
+        // Call obfuscation API
+        let res = await axios.get(`https://api.codex.jaagrav.in/obfuscator?code=${encodeURIComponent(code)}`);
+        let obfCode = res.data.obfuscated || res.data;
 
-        if (!originalCode) {
-            return reply("❌ Please reply to a JavaScript code OR provide code after `.obfuscate`");
-        }
+        if (!obfCode) return reply("❌ Failed to obfuscate code.");
 
-        // Obfuscation options (high security)
-        const obfuscationOptions = {
-            compact: true,
-            controlFlowFlattening: true,
-            controlFlowFlatteningThreshold: 0.75,
-            numbersToExpressions: true,
-            simplify: true,
-            shuffleStringArray: true,
-            splitStrings: true,
-            stringArrayThreshold: 0.8,
-            rotateStringArray: true,
-            deadCodeInjection: true,
-            deadCodeInjectionThreshold: 0.4,
-            identifierNamesGenerator: 'hexadecimal',
-            selfDefending: true,
-            disableConsoleOutput: false,
-            debugProtection: false,
-            debugProtectionInterval: false,
-            transformObjectKeys: true,
-            unicodeEscapeSequence: true
-        };
+        // Save to file
+        const filePath = path.join(__dirname, "../temp", `obfuscated_${Date.now()}.js`);
+        fs.writeFileSync(filePath, obfCode);
 
-        // Run obfuscation
-        const obfuscatedResult = JavaScriptObfuscator.obfuscate(originalCode, obfuscationOptions);
-        const obfuscatedCode = obfuscatedResult.getObfuscatedCode();
+        await conn.sendMessage(m.chat, {
+            document: fs.readFileSync(filePath),
+            fileName: "obfuscated.js",
+            mimetype: "application/javascript",
+            caption: "✅ Code successfully obfuscated by *PK-XMD*",
+            contextInfo: {
+                externalAdReply: {
+                    title: "PK-XMD Obfuscator",
+                    body: "Powered by Pkdriller",
+                    mediaType: 1,
+                    previewType: 0,
+                    renderLargerThumbnail: true,
+                    thumbnailUrl: "https://i.imgur.com/Z9h0J6W.jpeg",
+                    sourceUrl: "https://whatsapp.com/channel/0029Va9wPnJ2Ld80DZ3ZhC2U"
+                },
+                forwardedNewsletterMessageInfo: {
+                    newsletterJid: "120363308279823888@newsletter",
+                    newsletterName: "PK-XMD Updates",
+                    serverMessageId: -1
+                }
+            }
+        }, { quoted: mek });
 
-        // Preview comparison
-        const comparison = `
-📜 *ORIGINAL CODE (${formatBytes(originalCode.length)}):*
-\`\`\`javascript
-${truncate(originalCode, 200)}
-\`\`\`
-
-🔒 *OBFUSCATED CODE (${formatBytes(obfuscatedCode.length)}):*
-\`\`\`javascript
-${truncate(obfuscatedCode, 300)}
-\`\`\`
-
-✅ Obfuscation complete! Sending secured code file...
-`.trim();
-
-        await reply(comparison);
-
-        // Send full file
-        await conn.sendMessage(
-            from,
-            {
-                document: Buffer.from(obfuscatedCode),
-                fileName: 'secured_code.js',
-                mimetype: 'application/javascript',
-                caption: `🔒 Secured JavaScript Code | Obfuscated by PK-XMD`
-            },
-            { quoted: mek }
-        );
-
+        fs.unlinkSync(filePath);
     } catch (e) {
-        console.error("Obfuscation Error:", e);
-        reply(`❌ Obfuscation failed: ${e.message}`);
+        console.error(e);
+        reply("❌ Error: " + e.message);
     }
 });
-
-// Helper function to truncate long text
-function truncate(text, maxLength) {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...\n\n⚠️ TRUNCATED - DOWNLOAD FULL FILE BELOW';
-}
-
-// Helper function to format bytes
-function formatBytes(bytes) {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    if (bytes === 0) return '0 Bytes';
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];
-}
+                
