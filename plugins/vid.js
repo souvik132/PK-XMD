@@ -27,8 +27,8 @@ const princeVideoApi = {
 };
 
 cmd({
-  pattern: "vide",
-  alias: ["yt", "mp"],
+  pattern: "video",
+  alias: ["ytmp4", "mp4"],
   use: ".video <query/link>",
   desc: "Download YouTube video using Prince API.",
   category: "download",
