@@ -1,34 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const { cmd, commands } = require('../command');
 const moment = require('moment-timezone');
 const { runtime } = require('../lib/functions');
@@ -60,14 +29,12 @@ cmd({
         ];
         const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
-        // Command Grouping (fixed to avoid undefined)
+        // Command Grouping (skip undefined ones)
         let categorized = {};
         for (let c of Object.values(commands)) {
-            const category = c?.category || "other";
-            const pattern = c?.pattern || "unknown";
-
-            if (!categorized[category]) categorized[category] = [];
-            categorized[category].push(pattern);
+            if (!c?.pattern || !c?.category) continue; // skip bad commands
+            if (!categorized[c.category]) categorized[c.category] = [];
+            categorized[c.category].push(c.pattern);
         }
 
         // Build Menu Header with Flowers
@@ -134,4 +101,4 @@ ${'\u200B'.repeat(4001)}  💎
         reply("❌ Failed to display menu");
     }
 });
-            
+        
